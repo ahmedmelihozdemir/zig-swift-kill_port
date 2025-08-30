@@ -96,8 +96,17 @@ class PortKillService: ObservableObject {
         isScanning = true
         lastError = nil
         
+        NSLog("🔍 DEBUG: scanProcesses() called - monitoring ports: \(monitoredPorts)")
+        print("📡 Scanning ports: \(monitoredPorts)")
+        
         do {
             let newProcesses = try await scanPortsDirectly()
+            
+            NSLog("🔍 DEBUG: scanPortsDirectly() returned \(newProcesses.count) processes")
+            print("✅ Found \(newProcesses.count) processes")
+            for process in newProcesses {
+                print("   Port \(process.port): \(process.name) (PID: \(process.pid))")
+            }
             
             await MainActor.run {
                 self.processes = newProcesses
@@ -105,11 +114,13 @@ class PortKillService: ObservableObject {
                 self.isScanning = false
             }
         } catch let error as PortKillError {
+            print("❌ PortKill error: \(error.localizedDescription)")
             await MainActor.run {
                 self.lastError = error
                 self.isScanning = false
             }
         } catch {
+            print("❌ General error: \(error)")
             await MainActor.run {
                 self.lastError = .commandFailed
                 self.isScanning = false
@@ -121,8 +132,13 @@ class PortKillService: ObservableObject {
         var foundProcesses: [ProcessInfo] = []
         
         for port in monitoredPorts {
-            if let processInfo = try? await getProcessOnPort(port) {
+            do {
+                let processInfo = try await getProcessOnPort(port)
+                NSLog("🔍 DEBUG: Successfully found process on port \(port): \(processInfo)")
                 foundProcesses.append(processInfo)
+            } catch {
+                NSLog("🔍 DEBUG: Error checking port \(port): \(error)")
+                print("⚠️ Error checking port \(port): \(error)")
             }
         }
         
@@ -130,10 +146,13 @@ class PortKillService: ObservableObject {
     }
     
     private func getProcessOnPort(_ port: UInt16) async throws -> ProcessInfo {
-        // Use lsof to find processes listening on the port
+        // Use lsof to find processes listening on the port (both IPv4 and IPv6)
+        NSLog("🔍 DEBUG: Checking port \(port)")
+        print("🔍 Checking port \(port)")
+        
         let lsofProcess = Process()
-        lsofProcess.executableURL = URL(fileURLWithPath: "/usr/bin/lsof")
-        lsofProcess.arguments = ["-ti", ":\(port)", "-sTCP:LISTEN"]
+        lsofProcess.executableURL = URL(fileURLWithPath: "/usr/sbin/lsof")
+        lsofProcess.arguments = ["-i", ":\(port)", "-sTCP:LISTEN"]
         
         let pipe = Pipe()
         lsofProcess.standardOutput = pipe
@@ -143,15 +162,41 @@ class PortKillService: ObservableObject {
         lsofProcess.waitUntilExit()
         
         guard lsofProcess.terminationStatus == 0 else {
+            print("❌ lsof failed for port \(port)")
             throw PortKillError.processNotFound
         }
         
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         
-        guard !output.isEmpty, let pid = Int32(output) else {
+        NSLog("🔍 DEBUG: lsof output for port \(port): '\(output)'")
+        print("📝 lsof output for port \(port): '\(output)'")
+        
+        guard !output.isEmpty else {
+            print("❌ Empty lsof output for port \(port)")
             throw PortKillError.processNotFound
         }
+        
+        // Parse lsof output to extract PID
+        // Output format: COMMAND  PID USER   FD   TYPE    DEVICE SIZE/OFF NODE NAME
+        let lines = output.components(separatedBy: .newlines)
+        guard lines.count > 1 else { // Skip header line
+            print("❌ Not enough lines in lsof output for port \(port)")
+            throw PortKillError.processNotFound
+        }
+        
+        // Get the first data line (skip header)
+        let processLine = lines[1]
+        print("📋 Process line: '\(processLine)'")
+        let components = processLine.components(separatedBy: .whitespaces).filter { !$0.isEmpty }
+        print("📋 Components: \(components)")
+        
+        guard components.count >= 2, let pid = Int32(components[1]) else {
+            print("❌ Could not parse PID from components for port \(port)")
+            throw PortKillError.parseError
+        }
+        
+        print("✅ Found PID \(pid) for port \(port)")
         
         // Get process details
         let processInfo = try await getProcessDetails(pid: pid, port: port)
