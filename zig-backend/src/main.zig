@@ -1,7 +1,7 @@
 const std = @import("std");
-const cli = @import("cli.zig");
-const console_app = @import("console_app.zig");
-const TrayApp = @import("tray_app.zig").TrayApp;
+const cli = @import("lib/cli.zig");
+const console_app = @import("apps/console_app.zig");
+const TrayApp = @import("apps/tray_app.zig").TrayApp;
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -47,21 +47,4 @@ pub fn main() !void {
 
         try app.run();
     }
-}
-
-test "main functionality" {
-    // Basic smoke test to ensure modules can be imported
-    const testing = std.testing;
-    _ = testing;
-
-    // Test that we can create default config
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    const allocator = gpa.allocator();
-
-    const types = @import("types.zig");
-    var config = types.AppConfig.init(allocator);
-    defer config.deinit();
-
-    try config.validate();
 }

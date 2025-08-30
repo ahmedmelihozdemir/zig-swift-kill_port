@@ -25,7 +25,7 @@ A reimplementation of the Rust-based port-kill application using Zig 0.15.1.
 cd zig-port_kill
 
 # Build and run the application (easy way)
-./run.sh
+./scripts/run.sh
 ```
 
 ### Manual Build
@@ -49,22 +49,22 @@ zig build
 ./run.sh
 
 # Run in console mode
-./run.sh --console
+./scripts/run.sh --console
 
 # With verbose logging
-./run.sh --verbose
+./scripts/run.sh --verbose
 ```
 
 ### Port Configuration
 ```bash
 # Set port range
-./run.sh --start-port 3000 --end-port 8080
+./scripts/run.sh --start-port 3000 --end-port 8080
 
 # Monitor specific ports
-./run.sh --ports 3000,8000,8080,5000
+./scripts/run.sh --ports 3000,8000,8080,5000
 
 # Specific ports in console mode
-./run.sh --console --ports 3000,8000,8080
+./scripts/run.sh --console --ports 3000,8000,8080
 ```
 
 ### Command Line Options
@@ -81,10 +81,19 @@ zig build
 
 ```bash
 # Start test servers
-./test_ports.sh
+./scripts/test_ports.sh
 
 # Run the application in another terminal
-./run.sh --console
+./scripts/run.sh --console
+
+# Run unit tests
+zig build test
+
+# Run port 3000 specific test
+zig build test-port
+
+# Run example monitor
+zig run examples/monitor_port.zig
 ```
 
 ## Differences from Rust Version
@@ -123,13 +132,18 @@ zig build
 
 ```
 src/
-├── main.zig              # Entry point for GUI mode
-├── main_console.zig      # Entry point for console mode
-├── types.zig            # Data structures and types
-├── process_monitor.zig  # Process monitoring logic
-├── console_app.zig      # Console application
-├── tray_app.zig        # System tray application
-└── cli.zig             # Command line parsing
+├── main.zig                 # Entry point for GUI mode
+├── main_console.zig         # Entry point for console mode
+├── lib/                     # Core library modules
+│   ├── types.zig           # Data structures and types
+│   ├── process_monitor.zig # Process monitoring logic
+│   └── cli.zig             # Command line parsing
+├── apps/                   # Application modules
+│   ├── console_app.zig     # Console application
+│   └── tray_app.zig        # System tray application
+test/                       # Test files
+examples/                   # Usage examples
+scripts/                    # Build and utility scripts
 ```
 
 ### Process Detection

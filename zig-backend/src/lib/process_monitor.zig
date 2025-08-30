@@ -166,10 +166,10 @@ pub const ProcessMonitor = struct {
         const pid_str = try std.fmt.allocPrint(self.allocator, "{}", .{pid});
         defer self.allocator.free(pid_str);
 
-        const signal_str = try std.fmt.allocPrint(self.allocator, "{}", .{signal});
+        const signal_str = try std.fmt.allocPrint(self.allocator, "-{}", .{signal});
         defer self.allocator.free(signal_str);
 
-        const args = [_][]const u8{ "kill", "-s", signal_str, pid_str };
+        const args = [_][]const u8{ "kill", signal_str, pid_str };
 
         var child = std.process.Child.init(&args, self.allocator);
         child.stdout_behavior = .Ignore;
