@@ -1,4 +1,4 @@
-kaldigin yerden devam et ve asagidaki zig release notlarini unutma.
+Continue from where you left off and don't forget the Zig release notes below.
 
 Zig is a general-purpose programming language and toolchain for maintaining robust, optimal, and reusable software.
 

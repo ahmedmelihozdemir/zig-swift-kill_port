@@ -1,208 +1,208 @@
 # Zig Port Kill
 
-Rust ile yazılmış port-kill uygulamasının Zig 0.15.1 ile yeniden implementasyonu.
+A reimplementation of the Rust-based port-kill application using Zig 0.15.1.
 
-## Özellikler
+## Features
 
-- **Real-time Port Monitoring**: Port 2000-6000 aralığındaki gelişim süreçlerini izler
-- **Process Management**: Tespit edilen süreçleri güvenli şekilde sonlandırır
-- **GUI ve Console Modu**: Hem sistem çubuğu entegrasyonu hem de konsol modu
-- **Esneki Port Konfigürasyonu**: Port aralığı veya spesifik portlar izlenebilir
-- **macOS Entegrasyonu**: Native Cocoa API kullanarak sistem çubuğu entegrasyonu
+- **Real-time Port Monitoring**: Monitors development processes in the 2000-6000 port range
+- **Process Management**: Safely terminates detected processes
+- **GUI and Console Mode**: Both system tray integration and console mode
+- **Flexible Port Configuration**: Can monitor port ranges or specific ports
+- **macOS Integration**: System tray integration using native Cocoa APIs
 
-## Gereksinimler
+## Requirements
 
-- macOS 10.15 veya üzeri
-- Zig 0.15.0 veya üzeri
-- `lsof` komutu (macOS ile birlikte gelir)
+- macOS 10.15 or later
+- Zig 0.15.0 or later
+- `lsof` command (comes with macOS)
 
-## Kurulum ve Çalıştırma
+## Installation and Running
 
-### Hızlı Başlangıç
+### Quick Start
 
 ```bash
-# Projeyi klonlayın
+# Clone the project
 cd zig-port_kill
 
-# Uygulamayı build edin ve çalıştırın (kolay yol)
+# Build and run the application (easy way)
 ./run.sh
 ```
 
-### Manuel Build
+### Manual Build
 
 ```bash
 # Build
 zig build
 
-# GUI modunda çalıştır
+# Run in GUI mode
 ./zig-out/bin/port-kill
 
-# Console modunda çalıştır
+# Run in console mode
 ./zig-out/bin/port-kill-console
 ```
 
-## Kullanım Örnekleri
+## Usage Examples
 
-### Temel Kullanım
+### Basic Usage
 ```bash
-# Varsayılan: port 2000-6000 (GUI modu)
+# Default: port 2000-6000 (GUI mode)
 ./run.sh
 
-# Console modunda çalıştır
+# Run in console mode
 ./run.sh --console
 
-# Verbose logging ile
+# With verbose logging
 ./run.sh --verbose
 ```
 
-### Port Konfigürasyonu
+### Port Configuration
 ```bash
-# Port aralığı belirle
+# Set port range
 ./run.sh --start-port 3000 --end-port 8080
 
-# Spesifik portları izle
+# Monitor specific ports
 ./run.sh --ports 3000,8000,8080,5000
 
-# Console modunda spesifik portlar
+# Specific ports in console mode
 ./run.sh --console --ports 3000,8000,8080
 ```
 
-### Komut Satırı Seçenekleri
+### Command Line Options
 
-- `--start-port, -s`: Başlangıç portu (varsayılan: 2000)
-- `--end-port, -e`: Bitiş portu (varsayılan: 6000)
-- `--ports, -p`: Spesifik portlar (virgülle ayrılmış)
-- `--console, -c`: Console modunda çalıştır
-- `--verbose, -v`: Detaylı loglama
-- `--help, -h`: Yardım bilgisi
-- `--version, -V`: Versiyon bilgisi
+- `--start-port, -s`: Starting port (default: 2000)
+- `--end-port, -e`: Ending port (default: 6000)
+- `--ports, -p`: Specific ports (comma-separated)
+- `--console, -c`: Run in console mode
+- `--verbose, -v`: Verbose logging
+- `--help, -h`: Help information
+- `--version, -V`: Version information
 
-## Test Etme
+## Testing
 
 ```bash
-# Test serverları başlat
+# Start test servers
 ./test_ports.sh
 
-# Başka bir terminalde uygulamayı çalıştır
+# Run the application in another terminal
 ./run.sh --console
 ```
 
-## Rust Versiyonundan Farklar
+## Differences from Rust Version
 
-### Zig 0.15.1 Özellikleri Kullanıldı
+### Zig 0.15.1 Features Used
 
-1. **Yeni std.Io.Writer API**: Writergate sonrası yeni I/O arayüzü
-2. **ArrayList Unmanaged**: Varsayılan olarak unmanaged ArrayList
-3. **Compile-time String Formatting**: Zig'in güçlü compile-time özellikleri
-4. **Error Handling**: Zig'in error union sistemi
-5. **Memory Management**: Manual memory management ile güvenlik
+1. **New std.Io.Writer API**: New I/O interface after Writergate
+2. **ArrayList Unmanaged**: Unmanaged ArrayList by default
+3. **Compile-time String Formatting**: Zig's powerful compile-time features
+4. **Error Handling**: Zig's error union system
+5. **Memory Management**: Safety with manual memory management
 
-### Mimari Farklar
+### Architectural Differences
 
-**Rust Versiyonu:**
+**Rust Version:**
 - Tokio async runtime
 - Crossbeam channels
 - Tray-icon crate
 - Clap argument parsing
 
-**Zig Versiyonu:**
+**Zig Version:**
 - Single-threaded event loop
 - Direct Cocoa API integration
 - Custom CLI parsing
 - Manual memory management
 
-### Performans
+### Performance
 
-- **Compilation Speed**: Zig versiyonu çok daha hızlı compile oluyor
+- **Compilation Speed**: Zig version compiles much faster
 - **Runtime Performance**: Minimal memory overhead
-- **Binary Size**: Daha küçük binary boyutu
+- **Binary Size**: Smaller binary size
 
-## Teknik Detaylar
+## Technical Details
 
-### Modül Yapısı
+### Module Structure
 
 ```
 src/
-├── main.zig              # GUI modunun entry point'i
-├── main_console.zig      # Console modunun entry point'i
-├── types.zig            # Veri yapıları ve tipler
+├── main.zig              # Entry point for GUI mode
+├── main_console.zig      # Entry point for console mode
+├── types.zig            # Data structures and types
 ├── process_monitor.zig  # Process monitoring logic
-├── console_app.zig      # Console uygulaması
-├── tray_app.zig        # Sistem çubuğu uygulaması
-└── cli.zig             # Komut satırı parsing
+├── console_app.zig      # Console application
+├── tray_app.zig        # System tray application
+└── cli.zig             # Command line parsing
 ```
 
 ### Process Detection
 
-Süreç tespiti için macOS'un `lsof` komutu kullanılır:
+Process detection uses macOS's `lsof` command:
 ```bash
 lsof -ti :PORT -sTCP:LISTEN
 ```
 
 ### Process Termination
 
-1. **SIGTERM**: Önce nazik sonlandırma
-2. **SIGKILL**: 500ms sonra hala çalışıyorsa zorla sonlandırma
+1. **SIGTERM**: First attempt graceful termination
+2. **SIGKILL**: Force termination if still running after 500ms
 
-### macOS Entegrasyonu
+### macOS Integration
 
-Sistem çubuğu entegrasyonu için doğrudan Cocoa API'leri kullanılır:
-- NSStatusBar ile sistem çubuğu öğesi
-- NSMenu ile context menu
-- NSApplication ile event loop
+Direct Cocoa APIs are used for system tray integration:
+- NSStatusBar for system tray item
+- NSMenu for context menu
+- NSApplication for event loop
 
 ## Zig 0.15.1 Specific Features
 
-Bu implementasyon Zig 0.15.1'in yeni özelliklerini kullanır:
+This implementation uses Zig 0.15.1's new features:
 
-- **Format Methods**: `{f}` formatter ile custom format methods
-- **New std.Io**: Writergate sonrası yeni I/O API
-- **De-genericified Collections**: Generic olmayan ArrayList
-- **Improved Error Handling**: Daha iyi error propagation
+- **Format Methods**: Custom format methods with `{f}` formatter
+- **New std.Io**: New I/O API after Writergate
+- **De-genericified Collections**: Non-generic ArrayList
+- **Improved Error Handling**: Better error propagation
 
 ## Debugging
 
 ```bash
-# Console modunda verbose logging ile debug
+# Debug with console mode and verbose logging
 ./run.sh --console --verbose
 
-# Build ile test çalıştır
+# Run tests with build
 zig build test
 ```
 
-## Bilinen Limitasyonlar
+## Known Limitations
 
-1. **GUI Mode**: Sistem çubuğu menu callbacks basitleştirildi
-2. **Error Recovery**: Bazı edge case'lerde daha iyi error handling gerekli
-3. **Icon Support**: Şu an text-based icon, gelecekte image support eklenebilir
+1. **GUI Mode**: System tray menu callbacks are simplified
+2. **Error Recovery**: Better error handling needed for some edge cases
+3. **Icon Support**: Currently text-based icon, future image support can be added
 
-## Rust vs Zig Karşılaştırması
+## Rust vs Zig Comparison
 
-| Özellik | Rust Versiyonu | Zig Versiyonu |
-|---------|---------------|---------------|
-| Compile Time | ~30 saniye | ~3 saniye |
+| Feature | Rust Version | Zig Version |
+|---------|--------------|-------------|
+| Compile Time | ~30 seconds | ~3 seconds |
 | Binary Size | ~15MB | ~2MB |
 | Memory Safety | Borrow checker | Manual + safety checks |
 | Async Support | Tokio runtime | Single-threaded loop |
-| Dependencies | ~20 crate | Sadece sistem libs |
+| Dependencies | ~20 crates | Only system libs |
 | macOS Integration | Third-party crate | Direct Cocoa API |
 
-## Gelecek Planları
+## Future Plans
 
 1. **Icon Support**: PNG/ICO image support
-2. **Menu Callbacks**: Daha robust menu item handling
-3. **Event System**: Daha sophisticated event system
+2. **Menu Callbacks**: More robust menu item handling
+3. **Event System**: More sophisticated event system
 4. **Configuration File**: TOML/JSON config support
-5. **Process Details**: Daha detaylı process bilgileri
+5. **Process Details**: More detailed process information
 
-## Katkı
+## Contributing
 
 1. Fork repository
-2. Feature branch oluştur
-3. Değişiklikleri yap
-4. Test ekle
-5. Pull request gönder
+2. Create feature branch
+3. Make changes
+4. Add tests
+5. Submit pull request
 
-## Lisans
+## License
 
-Bu proje Rust versiyonu ile aynı lisans altındadır.
+This project is under the same license as the Rust version.
