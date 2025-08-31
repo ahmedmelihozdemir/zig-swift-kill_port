@@ -14,51 +14,86 @@ class MenuBarManager: ObservableObject {
     private var viewModel: MenuBarViewModel?
     
     init() {
-        setupMenuBar()
+        DispatchQueue.main.async {
+            self.setupMenuBar()
+            self.setupPopover()
+        }
     }
     
     private func setupMenuBar() {
-        // Create status item
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        print("Setting up menu bar...")
         
-        guard let statusItem = statusItem else { return }
+        // Create status item with fixed length
+        statusItem = NSStatusBar.system.statusItem(withLength: 28)
+        
+        guard let statusItem = statusItem else { 
+            print("Error: Could not create status item")
+            return 
+        }
+        
+        print("Status item created successfully")
         
         // Setup button
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "bolt.circle", accessibilityDescription: "Port Kill")
-            button.image?.isTemplate = true
+            // Use a simple text icon that's always visible
+            button.title = "⚡️"
+            button.font = NSFont.systemFont(ofSize: 18)
+            
+            // Set action
             button.action = #selector(togglePopover)
             button.target = self
+            button.toolTip = "Port Monitor - Click to open"
+            
+            print("Button configured successfully with title: ⚡️")
+        } else {
+            print("Error: Could not access status item button")
         }
-        
-        // Create popover
-        setupPopover()
     }
     
     private func setupPopover() {
-        popover = NSPopover()
-        guard let popover = popover else { return }
+        print("Setting up popover...")
         
-        popover.contentSize = NSSize(width: 320, height: 400)
+        popover = NSPopover()
+        guard let popover = popover else { 
+            print("Error: Could not create popover")
+            return 
+        }
+        
+        popover.contentSize = NSSize(width: 340, height: 450)
         popover.behavior = .transient
         popover.animates = true
         
         // Create hosting view
         let menuBarView = MenuBarView()
-        popover.contentViewController = NSHostingController(rootView: menuBarView)
+        let hostingController = NSHostingController(rootView: menuBarView)
+        popover.contentViewController = hostingController
+        
+        print("Popover configured successfully")
     }
     
     @objc private func togglePopover() {
         guard let popover = popover,
-              let button = statusItem?.button else { return }
+              let button = statusItem?.button else { 
+            print("Error: Popover or button not available")
+            return 
+        }
+        
+        print("Toggle popover called - Current state: \(popover.isShown)")
         
         if popover.isShown {
             popover.performClose(nil)
         } else {
-            popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+            // Calculate position
+            let buttonRect = button.bounds
+            print("Showing popover at button bounds: \(buttonRect)")
+            
+            popover.show(relativeTo: buttonRect, of: button, preferredEdge: .minY)
             
             // Activate app to ensure popover is focused
             NSApplication.shared.activate(ignoringOtherApps: true)
+            
+            // Make sure the popover window is key
+            popover.contentViewController?.view.window?.makeKey()
         }
     }
     
