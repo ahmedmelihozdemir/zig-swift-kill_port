@@ -23,7 +23,7 @@ class MenuBarViewModel: ObservableObject {
     
     init() {
         setupBindings()
-        startMonitoring()
+        // Don't start automatic monitoring - only scan manually
     }
     
     private func setupBindings() {
@@ -55,16 +55,20 @@ class MenuBarViewModel: ObservableObject {
     }
     
     func startMonitoring() {
-        portKillService.startScanning()
+        // No longer auto-starting scan
     }
     
     func stopMonitoring() {
         portKillService.stopScanning()
     }
     
+    func scanProcesses() async {
+        await portKillService.manualScan()
+    }
+    
     func refreshProcesses() {
         Task {
-            await portKillService.scanProcesses()
+            await scanProcesses()
         }
     }
     

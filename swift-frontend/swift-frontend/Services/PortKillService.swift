@@ -71,19 +71,9 @@ class PortKillService: ObservableObject {
         return "../zig-backend/zig-out/bin/port-kill" // Default fallback
     }
     
-    func startScanning() {
-        guard scanTimer == nil else { return }
-        
-        scanTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
-            Task {
-                await self?.scanProcesses()
-            }
-        }
-        
-        // Initial scan
-        Task {
-            await scanProcesses()
-        }
+    // Manual scan function - only scans when called
+    func manualScan() async {
+        await scanProcesses()
     }
     
     func stopScanning() {

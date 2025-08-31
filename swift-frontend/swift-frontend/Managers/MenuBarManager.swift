@@ -59,7 +59,7 @@ class MenuBarManager: ObservableObject {
             return 
         }
         
-        popover.contentSize = NSSize(width: 340, height: 450)
+        popover.contentSize = NSSize(width: 280, height: 250)
         popover.behavior = .transient
         popover.animates = true
         
