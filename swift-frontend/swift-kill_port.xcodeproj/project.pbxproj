@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		077BEAF12E63A77C000E3D31 /* swift-frontend.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "swift-frontend.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		077BEAFF2E63A77E000E3D31 /* swift-frontendTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "swift-frontendTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		077BEB092E63A77E000E3D31 /* swift-frontendUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "swift-frontendUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		077BEAF12E63A77C000E3D31 /* swift-kill_port.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "swift-kill_port.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		077BEAFF2E63A77E000E3D31 /* swift-kill_portTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "swift-kill_portTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		077BEB092E63A77E000E3D31 /* swift-kill_portUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "swift-kill_portUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -85,9 +85,9 @@
 		077BEAF22E63A77C000E3D31 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				077BEAF12E63A77C000E3D31 /* swift-frontend.app */,
-				077BEAFF2E63A77E000E3D31 /* swift-frontendTests.xctest */,
-				077BEB092E63A77E000E3D31 /* swift-frontendUITests.xctest */,
+				077BEAF12E63A77C000E3D31 /* swift-kill_port.app */,
+				077BEAFF2E63A77E000E3D31 /* swift-kill_portTests.xctest */,
+				077BEB092E63A77E000E3D31 /* swift-kill_portUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		077BEAF02E63A77C000E3D31 /* swift-frontend */ = {
+		077BEAF02E63A77C000E3D31 /* swift-kill_port */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 077BEB132E63A77E000E3D31 /* Build configuration list for PBXNativeTarget "swift-frontend" */;
+			buildConfigurationList = 077BEB132E63A77E000E3D31 /* Build configuration list for PBXNativeTarget "swift-kill_port" */;
 			buildPhases = (
 				077BEAED2E63A77C000E3D31 /* Sources */,
 				077BEAEE2E63A77C000E3D31 /* Frameworks */,
@@ -110,16 +110,16 @@
 			fileSystemSynchronizedGroups = (
 				077BEAF32E63A77C000E3D31 /* swift-frontend */,
 			);
-			name = "swift-frontend";
+			name = "swift-kill_port";
 			packageProductDependencies = (
 			);
 			productName = "swift-frontend";
-			productReference = 077BEAF12E63A77C000E3D31 /* swift-frontend.app */;
+			productReference = 077BEAF12E63A77C000E3D31 /* swift-kill_port.app */;
 			productType = "com.apple.product-type.application";
 		};
-		077BEAFE2E63A77E000E3D31 /* swift-frontendTests */ = {
+		077BEAFE2E63A77E000E3D31 /* swift-kill_portTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 077BEB162E63A77E000E3D31 /* Build configuration list for PBXNativeTarget "swift-frontendTests" */;
+			buildConfigurationList = 077BEB162E63A77E000E3D31 /* Build configuration list for PBXNativeTarget "swift-kill_portTests" */;
 			buildPhases = (
 				077BEAFB2E63A77E000E3D31 /* Sources */,
 				077BEAFC2E63A77E000E3D31 /* Frameworks */,
@@ -133,16 +133,16 @@
 			fileSystemSynchronizedGroups = (
 				077BEB022E63A77E000E3D31 /* swift-frontendTests */,
 			);
-			name = "swift-frontendTests";
+			name = "swift-kill_portTests";
 			packageProductDependencies = (
 			);
 			productName = "swift-frontendTests";
-			productReference = 077BEAFF2E63A77E000E3D31 /* swift-frontendTests.xctest */;
+			productReference = 077BEAFF2E63A77E000E3D31 /* swift-kill_portTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		077BEB082E63A77E000E3D31 /* swift-frontendUITests */ = {
+		077BEB082E63A77E000E3D31 /* swift-kill_portUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 077BEB192E63A77E000E3D31 /* Build configuration list for PBXNativeTarget "swift-frontendUITests" */;
+			buildConfigurationList = 077BEB192E63A77E000E3D31 /* Build configuration list for PBXNativeTarget "swift-kill_portUITests" */;
 			buildPhases = (
 				077BEB052E63A77E000E3D31 /* Sources */,
 				077BEB062E63A77E000E3D31 /* Frameworks */,
@@ -156,11 +156,11 @@
 			fileSystemSynchronizedGroups = (
 				077BEB0C2E63A77E000E3D31 /* swift-frontendUITests */,
 			);
-			name = "swift-frontendUITests";
+			name = "swift-kill_portUITests";
 			packageProductDependencies = (
 			);
 			productName = "swift-frontendUITests";
-			productReference = 077BEB092E63A77E000E3D31 /* swift-frontendUITests.xctest */;
+			productReference = 077BEB092E63A77E000E3D31 /* swift-kill_portUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -186,7 +186,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 077BEAEC2E63A77C000E3D31 /* Build configuration list for PBXProject "swift-frontend" */;
+			buildConfigurationList = 077BEAEC2E63A77C000E3D31 /* Build configuration list for PBXProject "swift-kill_port" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -200,9 +200,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				077BEAF02E63A77C000E3D31 /* swift-frontend */,
-				077BEAFE2E63A77E000E3D31 /* swift-frontendTests */,
-				077BEB082E63A77E000E3D31 /* swift-frontendUITests */,
+				077BEAF02E63A77C000E3D31 /* swift-kill_port */,
+				077BEAFE2E63A77E000E3D31 /* swift-kill_portTests */,
+				077BEB082E63A77E000E3D31 /* swift-kill_portUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -258,12 +258,12 @@
 /* Begin PBXTargetDependency section */
 		077BEB012E63A77E000E3D31 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 077BEAF02E63A77C000E3D31 /* swift-frontend */;
+			target = 077BEAF02E63A77C000E3D31 /* swift-kill_port */;
 			targetProxy = 077BEB002E63A77E000E3D31 /* PBXContainerItemProxy */;
 		};
 		077BEB0B2E63A77E000E3D31 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 077BEAF02E63A77C000E3D31 /* swift-frontend */;
+			target = 077BEAF02E63A77C000E3D31 /* swift-kill_port */;
 			targetProxy = 077BEB0A2E63A77E000E3D31 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -450,7 +450,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/swift-frontend.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/swift-frontend";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/swift-kill_port.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/swift-kill_port";
 			};
 			name = Debug;
 		};
@@ -467,7 +467,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/swift-frontend.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/swift-frontend";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/swift-kill_port.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/swift-kill_port";
 			};
 			name = Release;
 		};
@@ -504,7 +504,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		077BEAEC2E63A77C000E3D31 /* Build configuration list for PBXProject "swift-frontend" */ = {
+		077BEAEC2E63A77C000E3D31 /* Build configuration list for PBXProject "swift-kill_port" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				077BEB112E63A77E000E3D31 /* Debug */,
@@ -513,7 +513,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		077BEB132E63A77E000E3D31 /* Build configuration list for PBXNativeTarget "swift-frontend" */ = {
+		077BEB132E63A77E000E3D31 /* Build configuration list for PBXNativeTarget "swift-kill_port" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				077BEB142E63A77E000E3D31 /* Debug */,
@@ -522,7 +522,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		077BEB162E63A77E000E3D31 /* Build configuration list for PBXNativeTarget "swift-frontendTests" */ = {
+		077BEB162E63A77E000E3D31 /* Build configuration list for PBXNativeTarget "swift-kill_portTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				077BEB172E63A77E000E3D31 /* Debug */,
@@ -531,7 +531,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		077BEB192E63A77E000E3D31 /* Build configuration list for PBXNativeTarget "swift-frontendUITests" */ = {
+		077BEB192E63A77E000E3D31 /* Build configuration list for PBXNativeTarget "swift-kill_portUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				077BEB1A2E63A77E000E3D31 /* Debug */,
