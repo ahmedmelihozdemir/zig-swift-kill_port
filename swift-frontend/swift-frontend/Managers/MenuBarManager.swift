@@ -1,6 +1,6 @@
 //
 //  MenuBarManager.swift
-//  kill-port
+//  swift-frontend
 //
 //  Created by Melih Özdemir on 31.08.2025.
 //
@@ -36,7 +36,7 @@ class MenuBarManager: ObservableObject {
         // Setup button
         if let button = statusItem.button {
             // Use SF Symbol for process monitoring with proper sizing
-            if let image = NSImage(systemSymbolName: "cpu.fill", accessibilityDescription: "Kill Port") {
+            if let image = NSImage(systemSymbolName: "cpu.fill", accessibilityDescription: "Swift Frontend") {
                 image.isTemplate = true
                 // Set proper size for menu bar - smaller and more native
                 image.size = NSSize(width: 16, height: 16)
@@ -50,7 +50,7 @@ class MenuBarManager: ObservableObject {
             // Set action
             button.action = #selector(togglePopover)
             button.target = self
-            button.toolTip = "Kill Port - Click to open"
+            button.toolTip = "Swift Frontend - Click to open"
             
             print("Button configured successfully with process icon")
         } else {
@@ -110,7 +110,7 @@ class MenuBarManager: ObservableObject {
             guard let self = self,
                   let button = self.statusItem?.button else { return }
             
-            if let image = NSImage(systemSymbolName: systemName, accessibilityDescription: title ?? "Kill Port") {
+            if let image = NSImage(systemSymbolName: systemName, accessibilityDescription: title ?? "Swift Frontend") {
                 image.isTemplate = true
                 image.size = NSSize(width: 16, height: 16)
                 button.image = image
@@ -125,7 +125,7 @@ class MenuBarManager: ObservableObject {
     
     func updateStatusWithProcessCount(_ count: Int) {
         let iconName = count > 0 ? "cpu.fill" : "cpu"
-        let tooltip = count > 0 ? "Kill Port - \(count) active processes" : "Kill Port - No active processes"
+        let tooltip = count > 0 ? "Swift Frontend - \(count) active processes" : "Swift Frontend - No active processes"
         updateStatusIcon(iconName, title: tooltip)
     }
     

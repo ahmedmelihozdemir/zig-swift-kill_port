@@ -1,6 +1,6 @@
 //
-//  KillPortApp.swift
-//  kill-port
+//  swift_frontendApp.swift
+//  swift-frontend
 //
 //  Created by Melih Özdemir on 31.08.2025.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct KillPortApp: App {
+struct swift_frontendApp: App {
     @StateObject private var menuBarManager = MenuBarManager()
     @State private var isTerminating = false
     

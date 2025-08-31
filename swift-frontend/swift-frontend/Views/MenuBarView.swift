@@ -1,6 +1,6 @@
 //
 //  MenuBarView.swift
-//  kill-port
+//  swift-frontend
 //
 //  Created by Melih Özdemir on 31.08.2025.
 //
@@ -21,7 +21,7 @@ struct MenuBarView: View {
                         .foregroundColor(.blue)
                     
                     VStack(alignment: .leading, spacing: 1) {
-                        Text("Kill Port")
+                        Text("Swift Frontend")
                             .font(.system(size: 12, weight: .medium))
                             .foregroundColor(.primary)
                         

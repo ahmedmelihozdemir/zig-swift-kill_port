@@ -1,6 +1,6 @@
 //
 //  SettingsView.swift
-//  kill-port
+//  swift-frontend
 //
 //  Created by Melih Özdemir on 31.08.2025.
 //
@@ -37,7 +37,7 @@ struct SettingsView: View {
                             .font(.title2)
                             .fontWeight(.semibold)
                         
-                        Text("Configure Kill Port preferences")
+                        Text("Configure Swift Frontend preferences")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
