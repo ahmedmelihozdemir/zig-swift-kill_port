@@ -1,13 +1,7 @@
-//
-//  StatusBarInfo.swift
-//  swift-frontend
-//
-//  Created by Melih Özdemir on 31.08.2025.
-//
-
 import Foundation
 
-struct StatusBarInfo: Codable {
+// MARK: - StatusBarInfo Model
+struct StatusBarInfo: Codable, Sendable {
     let text: String
     let tooltip: String
     let hasProcesses: Bool
@@ -17,6 +11,8 @@ struct StatusBarInfo: Codable {
         self.tooltip = tooltip
         self.hasProcesses = hasProcesses
     }
+    
+    // MARK: - Factory Methods
     
     static func fromProcessCount(_ count: Int) -> StatusBarInfo {
         if count == 0 {
@@ -32,5 +28,17 @@ struct StatusBarInfo: Codable {
                 hasProcesses: true
             )
         }
+    }
+    
+    static func scanning() -> StatusBarInfo {
+        return StatusBarInfo(
+            text: "Scanning...",
+            tooltip: "Scanning for active processes on monitored ports",
+            hasProcesses: false
+        )
+    }
+    
+    static var empty: StatusBarInfo {
+        return fromProcessCount(0)
     }
 }

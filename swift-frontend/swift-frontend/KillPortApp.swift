@@ -1,6 +1,6 @@
 //
-//  swift_frontendApp.swift
-//  swift-frontend
+//  KillPortApp.swift
+//  kill-port
 //
 //  Created by Melih Özdemir on 31.08.2025.
 //
@@ -8,13 +8,25 @@
 import SwiftUI
 
 @main
-struct swift_frontendApp: App {
+struct KillPortApp: App {
     @StateObject private var menuBarManager = MenuBarManager()
+    @State private var isTerminating = false
     
     init() {
         // Hide dock icon and menu bar for menu bar-only app
         DispatchQueue.main.async {
             NSApp.setActivationPolicy(.accessory)
+        }
+        
+        // Handle app termination properly
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.willTerminateNotification,
+            object: nil,
+            queue: .main
+        ) { [isTerminating] _ in
+            guard !isTerminating else { return }
+            // Cleanup happens automatically through deinit methods
+            print("App terminating - cleanup initiated")
         }
     }
     

@@ -1,6 +1,6 @@
 //
 //  MenuBarViewModel.swift
-//  swift-frontend
+//  kill-port
 //
 //  Created by Melih Özdemir on 31.08.2025.
 //
@@ -20,6 +20,7 @@ class MenuBarViewModel: ObservableObject {
     
     private let portKillService = PortKillService()
     private var cancellables = Set<AnyCancellable>()
+    private var isDestroyed = false
     
     init() {
         setupBindings()
@@ -63,54 +64,52 @@ class MenuBarViewModel: ObservableObject {
     }
     
     func scanProcesses() async {
+        guard !isDestroyed else { return }
         await portKillService.manualScan()
     }
     
     func refreshProcesses() {
-        Task {
-            await scanProcesses()
+        guard !isDestroyed else { return }
+        Task { [weak self] in
+            await self?.scanProcesses()
         }
     }
     
-    func killProcess(_ processInfo: ProcessInfo) {
-        guard !isKilling else { return }
+    func killProcess(_ processInfo: ProcessInfo) async {
+        guard !isKilling && !isDestroyed else { return }
         
         isKilling = true
         
-        Task {
-            do {
-                try await portKillService.killProcess(processInfo)
-                await MainActor.run {
-                    self.isKilling = false
-                }
-            } catch {
-                await MainActor.run {
-                    self.isKilling = false
-                    self.errorMessage = "Failed to kill process: \(error.localizedDescription)"
-                    self.showingError = true
-                }
+        do {
+            try await portKillService.killProcess(processInfo)
+            if !isDestroyed {
+                self.isKilling = false
+            }
+        } catch {
+            if !isDestroyed {
+                self.isKilling = false
+                self.errorMessage = "Failed to kill process: \(error.localizedDescription)"
+                self.showingError = true
             }
         }
     }
     
-    func killAllProcesses() {
-        guard !isKilling else { return }
+    func killAllProcesses() async {
+        guard !isKilling && !isDestroyed else { return }
         guard !processes.isEmpty else { return }
         
         isKilling = true
         
-        Task {
-            do {
-                try await portKillService.killAllProcesses()
-                await MainActor.run {
-                    self.isKilling = false
-                }
-            } catch {
-                await MainActor.run {
-                    self.isKilling = false
-                    self.errorMessage = "Failed to kill all processes: \(error.localizedDescription)"
-                    self.showingError = true
-                }
+        do {
+            try await portKillService.killAllProcesses()
+            if !isDestroyed {
+                self.isKilling = false
+            }
+        } catch {
+            if !isDestroyed {
+                self.isKilling = false
+                self.errorMessage = "Failed to kill all processes: \(error.localizedDescription)"
+                self.showingError = true
             }
         }
     }
@@ -124,14 +123,21 @@ class MenuBarViewModel: ObservableObject {
     
     var menuBarIcon: String {
         if isScanning {
-            return "wifi.circle"
+            return "cpu"
         }
-        return statusInfo.hasProcesses ? "circle.fill" : "circle"
+        return statusInfo.hasProcesses ? "cpu.fill" : "cpu"
+    }
+    
+    func destroy() {
+        isDestroyed = true
+        stopMonitoring()
+        cancellables.removeAll()
     }
     
     deinit {
+        print("MenuBarViewModel deinit called")
         Task { @MainActor in
-            stopMonitoring()
+            destroy()
         }
     }
 }

@@ -1,6 +1,6 @@
 //
 //  MenuBarManager.swift
-//  swift-frontend
+//  kill-port
 //
 //  Created by Melih Özdemir on 31.08.2025.
 //
@@ -11,20 +11,20 @@ import AppKit
 class MenuBarManager: ObservableObject {
     private var statusItem: NSStatusItem?
     private var popover: NSPopover?
-    private var viewModel: MenuBarViewModel?
+    private weak var viewModel: MenuBarViewModel? // Weak reference to prevent retain cycle
     
     init() {
-        DispatchQueue.main.async {
-            self.setupMenuBar()
-            self.setupPopover()
+        DispatchQueue.main.async { [weak self] in
+            self?.setupMenuBar()
+            self?.setupPopover()
         }
     }
     
     private func setupMenuBar() {
         print("Setting up menu bar...")
         
-        // Create status item with fixed length
-        statusItem = NSStatusBar.system.statusItem(withLength: 28)
+        // Create status item with variable length for better integration
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         
         guard let statusItem = statusItem else { 
             print("Error: Could not create status item")
@@ -35,16 +35,24 @@ class MenuBarManager: ObservableObject {
         
         // Setup button
         if let button = statusItem.button {
-            // Use a simple text icon that's always visible
-            button.title = "⚡️"
-            button.font = NSFont.systemFont(ofSize: 18)
+            // Use SF Symbol for process monitoring with proper sizing
+            if let image = NSImage(systemSymbolName: "cpu.fill", accessibilityDescription: "Kill Port") {
+                image.isTemplate = true
+                // Set proper size for menu bar - smaller and more native
+                image.size = NSSize(width: 16, height: 16)
+                button.image = image
+            } else {
+                // Fallback to text icon
+                button.title = "⚡️"
+                button.font = NSFont.systemFont(ofSize: 14)
+            }
             
             // Set action
             button.action = #selector(togglePopover)
             button.target = self
-            button.toolTip = "Port Monitor - Click to open"
+            button.toolTip = "Kill Port - Click to open"
             
-            print("Button configured successfully with title: ⚡️")
+            print("Button configured successfully with process icon")
         } else {
             print("Error: Could not access status item button")
         }
@@ -99,10 +107,15 @@ class MenuBarManager: ObservableObject {
     
     func updateStatusIcon(_ systemName: String, title: String? = nil) {
         DispatchQueue.main.async { [weak self] in
-            guard let button = self?.statusItem?.button else { return }
+            guard let self = self,
+                  let button = self.statusItem?.button else { return }
             
-            button.image = NSImage(systemSymbolName: systemName, accessibilityDescription: title ?? "Port Kill")
-            button.image?.isTemplate = true
+            if let image = NSImage(systemSymbolName: systemName, accessibilityDescription: title ?? "Kill Port") {
+                image.isTemplate = true
+                image.size = NSSize(width: 16, height: 16)
+                button.image = image
+                button.title = "" // Clear any existing title
+            }
             
             if let title = title {
                 button.toolTip = title
@@ -110,9 +123,25 @@ class MenuBarManager: ObservableObject {
         }
     }
     
+    func updateStatusWithProcessCount(_ count: Int) {
+        let iconName = count > 0 ? "cpu.fill" : "cpu"
+        let tooltip = count > 0 ? "Kill Port - \(count) active processes" : "Kill Port - No active processes"
+        updateStatusIcon(iconName, title: tooltip)
+    }
+    
     deinit {
+        print("MenuBarManager deinit called")
+        
+        // Clean up popover
+        popover?.close()
+        popover = nil
+        
+        // Remove status item
         if let statusItem = statusItem {
             NSStatusBar.system.removeStatusItem(statusItem)
+            self.statusItem = nil
         }
+        
+        viewModel = nil
     }
 }

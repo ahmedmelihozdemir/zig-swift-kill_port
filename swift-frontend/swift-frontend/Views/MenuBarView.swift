@@ -1,6 +1,6 @@
 //
 //  MenuBarView.swift
-//  swift-frontend
+//  kill-port
 //
 //  Created by Melih Özdemir on 31.08.2025.
 //
@@ -9,18 +9,19 @@ import SwiftUI
 
 struct MenuBarView: View {
     @StateObject private var viewModel = MenuBarViewModel()
+    @State private var scanTask: Task<Void, Never>?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Compact Header
             VStack(spacing: 6) {
                 HStack(spacing: 8) {
-                    Image(systemName: "bolt.circle.fill")
+                    Image(systemName: "cpu.fill")
                         .font(.system(size: 14))
                         .foregroundColor(.blue)
                     
                     VStack(alignment: .leading, spacing: 1) {
-                        Text("Port Monitor")
+                        Text("Kill Port")
                             .font(.system(size: 12, weight: .medium))
                             .foregroundColor(.primary)
                         
@@ -33,9 +34,7 @@ struct MenuBarView: View {
                     
                     // Refresh button
                     Button(action: {
-                        Task {
-                            await viewModel.scanProcesses()
-                        }
+                        refreshProcesses()
                     }) {
                         Image(systemName: "arrow.clockwise")
                             .font(.system(size: 10))
@@ -91,10 +90,7 @@ struct MenuBarView: View {
                             ProcessRowView(
                                 process: process,
                                 onKill: {
-                                    Task {
-                                        await viewModel.killProcess(process)
-                                        await viewModel.scanProcesses()
-                                    }
+                                    killProcess(process)
                                 }
                             )
                             .padding(.horizontal, 8)
@@ -133,9 +129,28 @@ struct MenuBarView: View {
         .background(Color(NSColor.windowBackgroundColor))
         .onAppear {
             // Initial scan when popover opens
-            Task {
-                await viewModel.scanProcesses()
-            }
+            refreshProcesses()
+        }
+        .onDisappear {
+            // Cancel any ongoing scan task when view disappears
+            scanTask?.cancel()
+            scanTask = nil
+        }
+    }
+    
+    // MARK: - Private Methods
+    
+    private func refreshProcesses() {
+        scanTask?.cancel()
+        scanTask = Task { [weak viewModel] in
+            await viewModel?.scanProcesses()
+        }
+    }
+    
+    private func killProcess(_ process: ProcessInfo) {
+        Task { [weak viewModel] in
+            await viewModel?.killProcess(process)
+            await viewModel?.scanProcesses()
         }
     }
 }
@@ -144,6 +159,7 @@ struct ProcessRowView: View {
     let process: ProcessInfo
     let onKill: () -> Void
     @State private var isHovered = false
+    @State private var killTask: Task<Void, Never>?
     
     var body: some View {
         HStack(spacing: 6) {
@@ -170,7 +186,7 @@ struct ProcessRowView: View {
             Spacer()
             
             // Kill button
-            Button(action: onKill) {
+            Button(action: handleKillAction) {
                 Image(systemName: "xmark.circle.fill")
                     .font(.system(size: 12))
                     .foregroundColor(.red)
@@ -187,10 +203,22 @@ struct ProcessRowView: View {
                 isHovered = hovering
             }
         }
+        .onDisappear {
+            killTask?.cancel()
+            killTask = nil
+        }
+    }
+    
+    private func handleKillAction() {
+        killTask?.cancel()
+        killTask = Task {
+            onKill()
+        }
     }
 }
 
-// Extensions for better animations
+// MARK: - Extensions
+
 extension Animation {
     static func repeatWhileTrue(_ condition: Bool) -> Animation {
         condition ? .linear(duration: 1).repeatForever(autoreverses: false) : .default
@@ -199,4 +227,5 @@ extension Animation {
 
 #Preview {
     MenuBarView()
+        .frame(width: 280, height: 250)
 }
