@@ -73,8 +73,9 @@ DerivedData/
 # Zig build artifacts
 zig-backend/zig-out/
 zig-backend/zig-cache/
-**/zig-out/
-**/zig-cache/
+**/.zig-out/
+**/.zig-cache/
+
 
 # Swift build artifacts  
 swift-frontend/build/

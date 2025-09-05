@@ -182,12 +182,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - 🐛 **Bug Reports**: [GitHub Issues](https://github.com/ahmedmelihozdemir/zig-swift-kill_port/issues)
 - 💡 **Feature Requests**: [GitHub Discussions](https://github.com/ahmedmelihozdemir/zig-swift-kill_port/discussions)
-- 📧 **Contact**: [Your Email or Contact Method]
-
----
-
-**Made with ❤️ by Ahmed Melih Özdemir**
-
-If you find this project useful, please ⭐ **star it on GitHub**!
-
-🔗 **Repository**: https://github.com/ahmedmelihozdemir/zig-swift-kill_port
+- 📧 **Contact**: [ozdemirmelihdev@gmail.com]
