@@ -1,36 +1,46 @@
 #!/bin/bash
 
-# Port Monitor Launcher Script
-# Simple script to launch the Port Monitor application
+# Port Kill Monitor - Quick Launch Script
+# Builds and runs the application in one command
 
-APP_NAME="Port Monitor"
-APP_PATH="/Applications/Port Monitor.app"
-BUILD_PATH="$HOME/Library/Developer/Xcode/DerivedData/swift-frontend*/Build/Products/Debug/swift-frontend.app"
+set -e
 
-echo "🚀 Starting Port Monitor..."
+# Colors
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
 
-# Check if app is installed in Applications
-if [ -d "$APP_PATH" ]; then
-    echo "📱 Found installed app at $APP_PATH"
-    open "$APP_PATH"
-    exit 0
-fi
-
-# Check for development build
-if ls $BUILD_PATH 1> /dev/null 2>&1; then
-    DEV_BUILD=$(ls $BUILD_PATH 2>/dev/null | head -1)
-    if [ -d "$DEV_BUILD" ]; then
-        echo "🔧 Found development build at $DEV_BUILD"
-        open "$DEV_BUILD"
-        exit 0
-    fi
-fi
-
-# App not found
-echo "❌ Port Monitor not found!"
+echo -e "${BLUE}🚀 Port Kill Monitor - Quick Launch${NC}"
 echo ""
-echo "To install Port Monitor:"
-echo "1. Run the installer: ./install.sh"
-echo "2. Or build from source: cd swift-frontend && xcodebuild -scheme swift-frontend build"
-echo "3. Or download from releases: https://github.com/ahmedmelihozdemir/zig-swift-kill_port/releases"
-exit 1
+
+# Get current directory
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Build Zig backend
+echo -e "${YELLOW}[1/3]${NC} Building Zig backend..."
+cd "$PROJECT_DIR/zig-backend"
+zig build
+
+# Build Swift frontend
+echo -e "${YELLOW}[2/3]${NC} Building Swift frontend..."
+cd "$PROJECT_DIR/swift-frontend"
+xcodebuild -project swift-kill_port.xcodeproj 
+           -scheme swift-frontend 
+           -configuration Debug 
+           build
+
+# Launch the app
+echo -e "${YELLOW}[3/3]${NC} Launching application..."
+# Find and open the built app
+APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "swift-kill_port.app" -type d | head -1)
+
+if [ -n "$APP_PATH" ] && [ -d "$APP_PATH" ]; then
+    open "$APP_PATH"
+    echo -e "${GREEN}✅ Application launched successfully!${NC}"
+    echo ""
+    echo -e "${BLUE}Look for the ⚡ icon in your menu bar${NC}"
+else
+    echo "❌ Could not find built application"
+    exit 1
+fi
