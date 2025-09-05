@@ -1,8 +1,8 @@
-# Port Monitor 🚀
+# Port Kill Monitor 🚀
 
-A beautiful, minimalist macOS menu bar application for monitoring and managing processes on development ports.
+A beautiful, minimalist macOS menu bar application for monitoring and managing processes on development ports. Built with Swift frontend and Zig backend for optimal performance and user experience.
 
-![Port Monitor Preview](https://img.shields.io/badge/macOS-Menu%20Bar%20App-blue) ![Swift](https://img.shields.io/badge/Swift-5.5+-orange) ![Zig](https://img.shields.io/badge/Zig-0.15+-green)
+![Port Monitor Preview](https://img.shields.io/badge/macOS-Menu%20Bar%20App-blue) ![Swift](https://img.shields.io/badge/Swift-5.5+-orange) ![Zig](https://img.shields.io/badge/Zig-0.15+-green) ![License](https://img.shields.io/badge/License-MIT-green) ![Version](https://img.shields.io/badge/Version-1.0.0-blue)
 
 ## ✨ Features
 
@@ -83,56 +83,64 @@ port-kill-console
 
 ## 📖 Documentation
 
-- **[User Guide](USER_GUIDE.md)**: Comprehensive usage instructions
-- **[API Documentation](docs/API.md)**: For developers
-- **[Contributing](CONTRIBUTING.md)**: How to contribute
+- **[User Guide](docs/USER_GUIDE.md)**: Comprehensive usage instructions and troubleshooting
+- **[Architecture Guide](docs/ARCHITECTURE.md)**: Technical details about Swift and Zig components
+- **[Development Guide](docs/DEVELOPMENT.md)**: Setup instructions for contributors
+- **[API Reference](docs/API.md)**: Complete API documentation for both frontend and backend
+- **[Contributing Guidelines](CONTRIBUTING.md)**: How to contribute to the project
+- **[Changelog](CHANGELOG.md)**: Version history and release notes
 
 ## 🛠 Development
 
-### Project Structure
+For development setup and technical details, see our [Development Guide](docs/DEVELOPMENT.md) and [Architecture Guide](docs/ARCHITECTURE.md).
 
-```
-├── swift-frontend/          # macOS SwiftUI application
-│   ├── Views/              # UI components
-│   ├── ViewModels/         # Business logic
-│   ├── Services/           # Backend communication
-│   └── Models/             # Data models
-├── zig-backend/            # Zig backend for process monitoring
-│   ├── src/               # Source code
-│   ├── lib/               # Libraries
-│   └── examples/          # Usage examples
-└── docs/                  # Documentation
-```
-
-### Requirements
-
-- **macOS**: 11.0+ (Big Sur or later)
-- **Xcode**: 13.0+ (for Swift frontend)
-- **Zig**: 0.15+ (for backend)
-
-### Building
+### Quick Setup
 
 ```bash
-# Build backend
-cd zig-backend
-zig build -Doptimize=ReleaseFast
+# Clone repository
+git clone https://github.com/ahmedmelihozdemir/zig-swift-kill_port.git
+cd zig-swift-kill_port
 
-# Build frontend
-cd ../swift-frontend
-xcodebuild -scheme swift-frontend -configuration Release build
+# Run installer script
+./install.sh
+```
+
+### Architecture Overview
+
+```
+├── swift-frontend/          # macOS SwiftUI application (MVVM pattern)
+│   ├── Views/              # SwiftUI user interface components
+│   ├── ViewModels/         # Business logic and state management
+│   ├── Services/           # Backend communication layer
+│   ├── Models/             # Data models and structures
+│   └── Managers/           # System integration managers
+├── zig-backend/            # High-performance system monitoring
+│   ├── src/               # Core Zig source code
+│   ├── lib/               # Reusable library modules
+│   └── examples/          # Usage examples and tests
+└── docs/                  # Comprehensive documentation
 ```
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md).
+We welcome contributions! This project offers opportunities for both Swift frontend development and Zig backend optimization.
 
-### Areas for Contribution
+### Ways to Contribute
 
-- 🎨 **UI/UX Improvements**: Make the interface even more beautiful
-- 🔧 **New Features**: Additional monitoring capabilities
-- 📚 **Documentation**: Improve guides and examples
+- 🎨 **UI/UX Improvements**: Enhance the beautiful SwiftUI interface
+- ⚡ **Performance Optimization**: Improve Zig backend efficiency
+- 📚 **Documentation**: Expand guides and examples
 - 🐛 **Bug Fixes**: Help make the app more stable
 - 🌍 **Localization**: Support for multiple languages
+- 🔧 **New Features**: Additional monitoring capabilities
+
+### Getting Started
+1. **Read the guides**: [Development Guide](docs/DEVELOPMENT.md) and [Architecture Guide](docs/ARCHITECTURE.md)
+2. **Check issues**: Look for good first issues on GitHub
+3. **Join discussions**: Participate in project discussions
+4. **Submit PRs**: Follow our [Contributing Guidelines](CONTRIBUTING.md)
+
+For detailed contribution instructions, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 📄 License
 

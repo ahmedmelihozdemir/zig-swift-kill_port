@@ -1,114 +1,133 @@
 # Port Kill Monitor - Swift Frontend
 
-Modern MVVM mimarisiyle geliştirilmiş macOS menu bar uygulaması. Belirtilen portlarda çalışan işlemleri izler ve bunları güvenli bir şekilde sonlandırmanızı sağlar.
+A modern macOS menu bar application built with SwiftUI and MVVM architecture for monitoring and managing processes on development ports.
 
-## 🚀 Özellikler
+![Swift Frontend](https://img.shields.io/badge/Swift-5.5+-orange) ![SwiftUI](https://img.shields.io/badge/SwiftUI-MVVM-blue) ![macOS](https://img.shields.io/badge/macOS-11.0+-green)
 
-- **Menu Bar Entegrasyonu**: Sistem menu bar'ında sürekli çalışan küçük ikon
-- **Gerçek Zamanlı İzleme**: Portları 2 saniyede bir tarayarak güncel durumu gösterir
-- **Modern Swift UI**: SwiftUI ile oluşturulmuş kullanıcı dostu arayüz
-- **MVVM Mimarisi**: Temiz kod prensipleri ve test edilebilir yapı
-- **Process Management**: Güvenli SIGTERM/SIGKILL işlem sonlandırma
-- **Sandbox Desteği**: macOS güvenlik gereksinimlerine uygun
+## 🚀 Features
 
-## 🏗️ Mimari
+- **Menu Bar Integration**: Persistent system menu bar application with elegant bolt icon
+- **Real-time Monitoring**: Automatic port scanning every 2 seconds with live updates
+- **Modern SwiftUI Interface**: Beautiful, responsive user interface with smooth animations
+- **MVVM Architecture**: Clean code principles with testable, maintainable structure
+- **Safe Process Management**: Graceful SIGTERM/SIGKILL process termination
+- **Sandbox Compatible**: Designed to work within macOS security requirements
+
+## 🏗️ Architecture
 
 ### MVVM (Model-View-ViewModel) Pattern
 ```
 Models/
-├── ProcessInfo.swift          # Process veri modeli
-└── StatusBarInfo.swift        # Status bar bilgi modeli
+├── ProcessInfo.swift          # Process data model
+└── StatusBarInfo.swift        # Status bar information model
 
 ViewModels/
-└── MenuBarViewModel.swift     # Business logic ve state management
+└── MenuBarViewModel.swift     # Business logic and state management
 
 Views/
-└── MenuBarView.swift          # SwiftUI arayüz bileşenleri
+├── MenuBarView.swift          # Main SwiftUI interface components
+└── SettingsView.swift         # Configuration interface
 
 Services/
-└── PortKillService.swift      # Backend iletişim katmanı
+└── PortKillService.swift      # Backend communication layer
 
 Managers/
-└── MenuBarManager.swift       # macOS menu bar entegrasyonu
+└── MenuBarManager.swift       # macOS menu bar integration
 ```
 
-## 🔧 Teknik Detaylar
+## 🔧 Technical Details
 
-### Kullanılan Teknolojiler
-- **SwiftUI**: Modern UI framework
-- **Combine**: Reactive programming için data binding
-- **Foundation Process**: Sistem komutlarını çalıştırma
-- **AppKit**: macOS menu bar entegrasyonu
+### Technologies Used
+- **SwiftUI**: Modern declarative UI framework
+- **Combine**: Reactive programming for data binding
+- **Foundation Process**: System command execution
+- **AppKit**: macOS menu bar integration
+- **Async/Await**: Modern asynchronous programming
 
-### İzlenen Portlar (Varsayılan)
-- 3000, 3001 (Development sunucuları)
-- 8000, 8080 (HTTP alternatif portları)
-- 5000, 9000 (Genel uygulama portları)
+### Monitored Ports (Default)
+- **3000, 3001**: Development servers (React, Next.js, Node.js)
+- **4000**: Express.js, Phoenix Framework
+- **5000**: Flask, development servers
+- **8000**: Django, Python HTTP server
+- **8080**: Tomcat, Jenkins, alternative HTTP
+- **8888**: Jupyter Notebook
+- **9000**: Various development tools
 
-### Güvenlik
-- Sandbox desteği devre dışı (sistem komutları için gerekli)
-- Network client/server yetkisi
-- Dosya erişim izinleri
+### Security Features
+- **Sandbox support**: Disabled for system command requirements
+- **Network permissions**: Client/server network access
+- **File access permissions**: Required for process monitoring
+- **User consent**: All process terminations require user interaction
 
-## 🚦 Kurulum ve Çalıştırma
+## 🚦 Setup and Installation
 
-### Gereksinimler
-- macOS 15.5+
-- Xcode 16.0+
-- Swift 5.0+
+### Requirements
+- **macOS**: 11.0+ (Big Sur or later)
+- **Xcode**: 14.0+
+- **Swift**: 5.5+
 
-### Build
+### Build Instructions
 ```bash
 cd swift-frontend
-xcodebuild -project swift-frontend.xcodeproj -scheme swift-frontend -configuration Debug build
+
+# Debug build
+xcodebuild -project swift-frontend.xcodeproj \
+           -scheme swift-frontend \
+           -configuration Debug \
+           build
+
+# Release build
+xcodebuild -project swift-frontend.xcodeproj \
+           -scheme swift-frontend \
+           -configuration Release \
+           build
 ```
 
-### Çalıştırma
+### Running the Application
 ```bash
-open /Users/melih.ozdemir/Library/Developer/Xcode/DerivedData/swift-frontend-*/Build/Products/Debug/swift-frontend.app
+# From Xcode
+# Open swift-frontend.xcodeproj and press ⌘+R
+
+# From command line (after build)
+open /path/to/DerivedData/swift-frontend-*/Build/Products/Debug/swift-frontend.app
 ```
 
-## 🎯 Kullanım
+## 🎯 Usage
 
-1. **Uygulama Başlatma**: Menu bar'da ⚡ ikonunu arayın
-2. **Port İzleme**: İkon üzerine tıklayarak popover açın
-3. **Process Listesi**: Aktif işlemleri port bilgileriyle birlikte görün
-4. **Tekil Sonlandırma**: Her işlemin yanındaki ❌ butonuna tıklayın
-5. **Toplu Sonlandırma**: "Kill All Processes" butonunu kullanın
+1. **Launch Application**: Look for the ⚡ bolt icon in your menu bar
+2. **Open Monitor Panel**: Click the icon to open the monitoring popover
+3. **View Process List**: See active processes with port and PID information
+4. **Terminate Individual Process**: Click the ❌ button next to each process
+5. **Terminate All Processes**: Use the "Kill All Processes" button
+6. **Access Settings**: Click the menu button (⋯) for configuration options
 
-## 📋 Özellik Detayları
+## 📋 Interface Components
 
-### Process Monitoring
-- `lsof` komutu ile port taraması
-- `ps` komutu ile process detaylarını alma
-- 2 saniyede bir otomatik güncelleme
-- Efficient scanning (sadece değişiklik varsa UI güncelleme)
+### MenuBarView
+- **Header Section**: App branding with gradient background and refresh button
+- **Status Card**: System status indicator with process count and visual feedback
+- **Process List**: Modern card-based layout showing port badges and process details
+- **Action Buttons**: Kill all processes, settings menu, and application controls
+- **Footer Menu**: Settings, help documentation, and quit options
 
-### Process Termination
-1. **SIGTERM (15)**: Nezaketen sonlandırma
-2. **500ms bekleme**: Process'in temiz şekilde kapanması için
-3. **SIGKILL (9)**: Gerekirse zorla sonlandırma
+### SettingsView
+- **Auto-refresh Configuration**: Customizable scan intervals (1-60 seconds)
+- **Port Management**: Add/remove custom ports with visual port badges
+- **Notification Settings**: Success and error notification preferences
+- **Appearance Options**: Theme and display customization
+- **Reset to Defaults**: Quick restore to default settings
 
-### UI Components
-
-#### MenuBarView
-- Header: Uygulama adı ve refresh butonu
-- Status: Durum bilgisi ve tooltip
-- Process List: Aktif işlemler listesi
-- Kill All: Toplu sonlandırma butonu
-- Footer: Settings ve Quit butonları
-
-#### ProcessRowView
-- Port badge: Port numarası
-- Process info: İsim ve PID
-- Command path: Tam dosya yolu
-- Kill button: Tekil sonlandırma
+### Process Management
+The application uses a two-stage termination process:
+1. **SIGTERM (15)**: Graceful termination request
+2. **500ms wait period**: Allow process cleanup
+3. **SIGKILL (9)**: Force termination if process still running
 
 ### Error Handling
-- Process bulunamadı durumları
-- Komut çalıştırma hataları
-- Kill işlemi başarısızlıkları
-- Network erişim sorunları
+- **Process not found**: Graceful handling of already terminated processes
+- **Command execution errors**: User-friendly error messages
+- **Permission failures**: Clear guidance for required permissions
+- **Network access issues**: Retry mechanisms and status reporting
 
 ## 🔄 State Management
 
@@ -119,80 +138,209 @@ class MenuBarViewModel: ObservableObject {
     @Published var processes: [ProcessInfo] = []
     @Published var isScanning: Bool = false
     @Published var statusInfo: StatusBarInfo
-    // ...
+    @Published var settings: AppSettings
+    
+    // Core functionality
+    func refreshProcesses() async
+    func killProcess(_ process: ProcessInfo) async
+    func killAllProcesses() async
+    func startAutoRefresh()
 }
 ```
 
-### Combine Bindings
-- Service layer'dan ViewModel'e otomatik data akışı
-- UI'da reactive güncellemeler
-- Error state management
+### Combine Integration
+- **Service to ViewModel**: Automatic data flow from backend services
+- **Reactive UI Updates**: SwiftUI automatically reflects state changes
+- **Error State Management**: Centralized error handling and user feedback
 
-## 🧪 Test Senaryoları
+## 🧪 Testing
 
-### Manual Testing
-1. **Port 3000'de server başlat**:
-   ```bash
-   python3 -m http.server 3000
-   ```
+### Unit Tests
+```bash
+cd swift-frontend
 
-2. **Uygulamayı çalıştır** ve menu bar'dan popover aç
+# Run all tests
+xcodebuild test -project swift-frontend.xcodeproj \
+                -scheme swift-frontend
 
-3. **Process görünürlüğünü kontrol et**
+# Run specific test class
+xcodebuild test -project swift-frontend.xcodeproj \
+                -scheme swift-frontend \
+                -only-testing:swift-frontendTests/MenuBarViewModelTests
+```
 
-4. **Kill functionality test et**
+### Manual Testing Scenarios
 
-## 📁 Dosya Yapısı
+#### Test Process Detection
+```bash
+# Terminal 1: Start test server
+python3 -m http.server 3000
+
+# Terminal 2: Run application and verify detection
+# Check that process appears in the monitoring panel
+```
+
+#### Test Process Termination
+1. Start multiple servers on different ports
+2. Open Port Monitor panel
+3. Verify all processes are listed
+4. Test individual process termination
+5. Test bulk process termination
+
+### UI Testing
+```bash
+# Run UI automation tests
+xcodebuild test -project swift-frontend.xcodeproj \
+                -scheme swift-frontend \
+                -only-testing:swift-frontendUITests
+```
+
+## 📁 Project Structure
 
 ```
 swift-frontend/
 ├── swift-frontend/
-│   ├── swift_frontendApp.swift       # Ana uygulama entry point
-│   ├── ContentView.swift             # Placeholder view
+│   ├── swift_frontendApp.swift       # Application entry point
+│   ├── ContentView.swift             # Placeholder root view
 │   ├── Models/
-│   │   ├── ProcessInfo.swift         # Process veri yapısı
-│   │   └── StatusBarInfo.swift       # Status bilgi yapısı
+│   │   ├── ProcessInfo.swift         # Process data structure
+│   │   └── StatusBarInfo.swift       # Status information model
 │   ├── ViewModels/
-│   │   └── MenuBarViewModel.swift    # Ana business logic
+│   │   └── MenuBarViewModel.swift    # Main business logic
 │   ├── Views/
-│   │   └── MenuBarView.swift         # UI bileşenleri
+│   │   ├── MenuBarView.swift         # Primary UI components
+│   │   └── SettingsView.swift        # Configuration interface
 │   ├── Services/
-│   │   └── PortKillService.swift     # Backend haberleşme
+│   │   └── PortKillService.swift     # Backend communication
 │   ├── Managers/
-│   │   └── MenuBarManager.swift      # Menu bar yönetimi
-│   └── Assets.xcassets/              # UI assets
-└── swift-frontend.xcodeproj/         # Xcode proje dosyaları
+│   │   └── MenuBarManager.swift      # Menu bar integration
+│   └── Assets.xcassets/              # UI assets and icons
+├── swift-frontendTests/              # Unit tests
+├── swift-frontendUITests/            # UI automation tests
+└── swift-frontend.xcodeproj/         # Xcode project configuration
 ```
 
-## 🔮 Gelecek Geliştirmeler
+## 🔮 Planned Enhancements
 
-- [ ] **Ayarlar Sayfası**: Port listesi özelleştirme
-- [ ] **Notification Desteği**: Process kill bildirimleri
-- [ ] **Zig Backend Entegrasyonu**: Doğrudan backend kullanımı
-- [ ] **Auto-start**: Sistem açılışında otomatik başlatma
-- [ ] **Keyboard Shortcuts**: Hızlı erişim tuşları
-- [ ] **Filtering**: Process filtreleme ve arama
-- [ ] **History**: Sonlandırma geçmişi
-- [ ] **Dark Mode**: Tema desteği
+### Near-term Features
+- [ ] **Enhanced Settings Panel**: Advanced port configuration and monitoring options
+- [ ] **Notification System**: Native macOS notifications for process events
+- [ ] **Keyboard Shortcuts**: Quick access hotkeys for common operations
+- [ ] **Process Filtering**: Search and filter capabilities for large process lists
+- [ ] **Themes Support**: Light/dark theme customization
 
-## 🐛 Bilinen Sorunlar
+### Long-term Goals
+- [ ] **Performance Monitoring**: CPU and memory usage tracking for processes
+- [ ] **Process History**: Historical view of terminated processes
+- [ ] **Integration APIs**: External tool integration capabilities
+- [ ] **Advanced Automation**: Scripting support for automated workflows
+- [ ] **Multi-user Support**: Process management across different user accounts
 
-- Sandbox kısıtlamaları nedeniyle bazı sistem komutları kısıtlı olabilir
-- Process kill işlemi admin yetkisi gerektirebilir
-- Menu bar icon tema değişikliklerinde güncelleme gecikmesi
+## 🐛 Known Issues and Limitations
 
-## 📄 Lisans
+### Current Limitations
+- **Sandbox restrictions**: Some system commands may be limited in sandboxed mode
+- **Admin privileges**: Process termination may require elevated permissions for system processes
+- **Menu bar icon updates**: Theme changes may require application restart for icon updates
+- **Process detection latency**: 2-second default scan interval for real-time updates
 
-Bu proje açık kaynak kodludur ve MIT lisansı altında dağıtılmaktadır.
+### Workarounds
+- **Permission issues**: Run application with appropriate user privileges
+- **Process not found**: Processes may terminate between scan and kill operations (handled gracefully)
+- **UI responsiveness**: All backend operations are asynchronous to prevent UI blocking
 
-## 🤝 Katkıda Bulunma
+## 📄 License
 
-1. Fork yapın
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Değişikliklerinizi commit edin (`git commit -m 'Add amazing feature'`)
-4. Branch'inizi push edin (`git push origin feature/amazing-feature`)
-5. Pull Request açın
+This project is open source and available under the MIT License.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please see the main project's [Contributing Guidelines](../CONTRIBUTING.md) for details on:
+
+1. **Code Style**: Swift and SwiftUI best practices
+2. **Testing Requirements**: Unit and UI test coverage expectations
+3. **Pull Request Process**: Branch strategy and review process
+4. **Issue Reporting**: Bug reports and feature requests
+
+### Development Setup
+1. Fork the repository
+2. Clone your fork locally
+3. Open `swift-frontend.xcodeproj` in Xcode
+4. Make your changes with appropriate tests
+5. Submit a pull request
 
 ---
 
-**Not**: Bu uygulama Zig backend ile birlikte çalışacak şekilde tasarlanmıştır. Backend entegrasyonu için `zig-backend` klasöründeki projeyi de build etmeniz gerekebilir.
+**Note**: This Swift frontend is designed to work in conjunction with the Zig backend. For complete functionality, ensure both components are properly built and integrated. See the main project [Development Guide](../docs/DEVELOPMENT.md) for full setup instructions.
+
+## 🔄 Data Flow and Communication
+
+### Backend Integration
+The Swift frontend communicates with the Zig backend through process execution and JSON data exchange:
+
+```swift
+// Swift service layer
+class PortKillService: ObservableObject {
+    func scanPorts() async -> [ProcessInfo] {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "./zig-out/bin/port-kill")
+        process.arguments = ["--scan", "--json"]
+        
+        // Execute and parse response
+        let output = try await executeProcess(process)
+        return try JSONDecoder().decode([ProcessInfo].self, from: output)
+    }
+    
+    func killProcess(pid: Int) async -> Bool {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "./zig-out/bin/port-kill")
+        process.arguments = ["--kill", "\(pid)"]
+        
+        return try await executeProcess(process) != nil
+    }
+}
+```
+
+### State Synchronization
+- **Real-time updates**: 2-second automatic refresh cycle
+- **Reactive UI**: SwiftUI automatically reflects data changes
+- **Error handling**: Comprehensive error states and user feedback
+- **Performance optimization**: Only update UI when data actually changes
+
+## 🎨 User Interface Design
+
+### Design Principles
+- **Minimalist aesthetic**: Clean, uncluttered interface following macOS design guidelines
+- **Visual hierarchy**: Clear information structure with appropriate typography and spacing
+- **Accessibility**: VoiceOver support, keyboard navigation, and high contrast compatibility
+- **Animation**: Smooth, purposeful animations that enhance user experience without distraction
+
+### Color Scheme and Theming
+```swift
+// Modern gradient implementations
+struct GradientStyles {
+    static let header = LinearGradient(
+        colors: [.blue.opacity(0.8), .purple.opacity(0.6)],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+    
+    static let killButton = LinearGradient(
+        colors: [.red.opacity(0.8), .pink.opacity(0.6)],
+        startPoint: .leading,
+        endPoint: .trailing
+    )
+    
+    static let processCard = LinearGradient(
+        colors: [.primary.opacity(0.05), .secondary.opacity(0.02)],
+        startPoint: .top,
+        endPoint: .bottom
+    )
+}
+```
+
+### Component Architecture
+- **Reusable components**: Modular UI elements for consistent design
+- **Custom modifiers**: SwiftUI view modifiers for common styling patterns
+- **Responsive design**: Adapts to different content sizes and system settings
+- **System integration**: Uses native macOS UI patterns and behaviors
