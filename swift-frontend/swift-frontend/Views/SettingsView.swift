@@ -195,34 +195,49 @@ struct SettingsView: View {
                             }
                             
                             // Add new port
-                            HStack(spacing: 12) {
-                                TextField("Add port (e.g., 3000)", text: $newPort)
-                                    .textFieldStyle(ModernTextFieldStyle())
-                                    .onSubmit {
-                                        addPort()
-                                    }
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Add New Port")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundColor(Colors.textSecondary)
                                 
-                                Button(action: addPort) {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "plus")
-                                            .font(.system(size: 10, weight: .bold))
-                                        Text("Add")
-                                            .font(.system(size: 12, weight: .semibold))
-                                    }
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 8)
-                                    .background(
-                                        LinearGradient(
-                                            colors: newPort.isEmpty ? [Colors.textSecondary, Colors.textSecondary] : [Colors.accent, Colors.accent.opacity(0.8)],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
+                                HStack(spacing: 12) {
+                                    TextField("Enter port number (e.g., 3000, 8080)", text: $newPort)
+                                        .textFieldStyle(ModernTextFieldStyle())
+                                        .onSubmit {
+                                            addPort()
+                                        }
+                                    
+                                    Button(action: addPort) {
+                                        HStack(spacing: 6) {
+                                            Image(systemName: "plus.circle.fill")
+                                                .font(.system(size: 12, weight: .medium))
+                                            Text("Add Port")
+                                                .font(.system(size: 12, weight: .semibold))
+                                        }
+                                        .foregroundColor(.white)
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 12)
+                                        .background(
+                                            LinearGradient(
+                                                colors: newPort.isEmpty ? 
+                                                [Colors.textSecondary.opacity(0.6), Colors.textSecondary.opacity(0.4)] : 
+                                                [Colors.accent, Colors.accent.opacity(0.8)],
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            )
                                         )
-                                    )
-                                    .clipShape(Capsule())
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                                        .shadow(
+                                            color: newPort.isEmpty ? Color.clear : Colors.accent.opacity(0.3),
+                                            radius: newPort.isEmpty ? 0 : 3,
+                                            x: 0,
+                                            y: newPort.isEmpty ? 0 : 2
+                                        )
+                                    }
+                                    .disabled(newPort.isEmpty)
+                                    .buttonStyle(PlainButtonStyle())
+                                    .animation(.easeInOut(duration: 0.2), value: newPort.isEmpty)
                                 }
-                                .buttonStyle(PlainButtonStyle())
-                                .disabled(newPort.isEmpty)
                             }
                             
                             VStack(alignment: .leading, spacing: 4) {
@@ -460,16 +475,34 @@ struct ModernPortBadge: View {
 }
 
 struct ModernTextFieldStyle: TextFieldStyle {
+    @State private var isFocused = false
+    
     func _body(configuration: TextField<Self._Label>) -> some View {
         configuration
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .font(.system(size: 12, weight: .medium))
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .font(.system(size: 13, weight: .medium))
+            .foregroundColor(SettingsView.Colors.textPrimary)
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .fill(SettingsView.Colors.surface)
-                    .shadow(color: Color.black.opacity(0.05), radius: 1, x: 0, y: 1)
+                    .stroke(
+                        isFocused ? SettingsView.Colors.accent.opacity(0.5) : SettingsView.Colors.textSecondary.opacity(0.2),
+                        lineWidth: isFocused ? 2 : 1
+                    )
+                    .shadow(
+                        color: isFocused ? SettingsView.Colors.accent.opacity(0.1) : Color.black.opacity(0.02),
+                        radius: isFocused ? 3 : 1,
+                        x: 0,
+                        y: isFocused ? 1 : 0.5
+                    )
             )
+            .onTapGesture {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isFocused = true
+                }
+            }
+            .animation(.easeInOut(duration: 0.2), value: isFocused)
     }
 }
 
