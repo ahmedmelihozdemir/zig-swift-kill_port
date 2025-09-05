@@ -10,81 +10,175 @@ import SwiftUI
 struct MenuBarView: View {
     @StateObject private var viewModel = MenuBarViewModel()
     @State private var scanTask: Task<Void, Never>?
+    @State private var showSettings = false
+    
+    // Design System Colors
+    private struct Colors {
+        static let primary = Color(red: 0.09, green: 0.11, blue: 0.15)
+        static let secondary = Color(red: 0.13, green: 0.16, blue: 0.21)
+        static let accent = Color(red: 0.27, green: 0.54, blue: 1.0)
+        static let success = Color(red: 0.2, green: 0.78, blue: 0.35)
+        static let warning = Color(red: 1.0, green: 0.58, blue: 0.0)
+        static let danger = Color(red: 1.0, green: 0.23, blue: 0.19)
+        static let textPrimary = Color.primary
+        static let textSecondary = Color.secondary
+        static let surface = Color(NSColor.controlBackgroundColor)
+        static let background = Color(NSColor.windowBackgroundColor)
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Compact Header
-            VStack(spacing: 6) {
-                HStack(spacing: 8) {
-                    Image(systemName: "cpu.fill")
-                        .font(.system(size: 14))
-                        .foregroundColor(.blue)
-                    
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text("Swift Frontend")
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(.primary)
+            // Modern Header with gradient
+            VStack(spacing: 8) {
+                HStack(spacing: 10) {
+                    // App icon with gradient
+                    ZStack {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [Colors.accent, Colors.accent.opacity(0.7)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 24, height: 24)
                         
-                        Text("\(viewModel.processes.count) processes")
-                            .font(.system(size: 9))
-                            .foregroundColor(.secondary)
+                        Image(systemName: "cpu.fill")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(.white)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Port Monitor")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(Colors.textPrimary)
+                        
+                        HStack(spacing: 4) {
+                            Circle()
+                                .fill(viewModel.processes.isEmpty ? Colors.textSecondary : Colors.success)
+                                .frame(width: 6, height: 6)
+                            
+                            Text("\(viewModel.processes.count) active")
+                                .font(.system(size: 10, weight: .medium))
+                                .foregroundColor(Colors.textSecondary)
+                        }
                     }
                     
                     Spacer()
                     
-                    // Refresh button
-                    Button(action: {
-                        refreshProcesses()
-                    }) {
-                        Image(systemName: "arrow.clockwise")
-                            .font(.system(size: 10))
-                            .foregroundColor(.blue)
+                    // Action buttons
+                    HStack(spacing: 6) {
+                        // Refresh button
+                        Button(action: {
+                            refreshProcesses()
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(Colors.surface)
+                                    .frame(width: 24, height: 24)
+                                
+                                Image(systemName: "arrow.clockwise")
+                                    .font(.system(size: 10, weight: .medium))
+                                    .foregroundColor(Colors.accent)
+                                    .frame(width: 24, height: 24) // Icon'u circle ile aynı boyutta frame ver
+                                    .rotationEffect(.degrees(viewModel.isScanning ? 360 : 0))
+                                    .animation(
+                                        viewModel.isScanning ? 
+                                        .linear(duration: 1).repeatForever(autoreverses: false) : 
+                                        .default,
+                                        value: viewModel.isScanning
+                                    )
+                            }
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .disabled(viewModel.isScanning)
+                        
+                        // Settings button
+                        Button(action: {
+                            showSettings = true
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(Colors.surface)
+                                    .frame(width: 24, height: 24)
+                                
+                                Image(systemName: "gear")
+                                    .font(.system(size: 10, weight: .medium))
+                                    .foregroundColor(Colors.textSecondary)
+                            }
+                        }
+                        .buttonStyle(PlainButtonStyle())
                     }
-                    .buttonStyle(PlainButtonStyle())
-                    .disabled(viewModel.isScanning)
-                    
-                    // Status indicator
-                    Circle()
-                        .fill(viewModel.isScanning ? Color.green : Color.gray)
-                        .frame(width: 5, height: 5)
-                        .scaleEffect(viewModel.isScanning ? 1.2 : 1.0)
-                        .animation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true), value: viewModel.isScanning)
                 }
-                .padding(.horizontal, 10)
-                .padding(.top, 8)
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
                 
-                // Compact scanning indicator
+                // Scanning indicator
                 if viewModel.isScanning {
-                    HStack(spacing: 4) {
+                    HStack(spacing: 6) {
                         ProgressView()
-                            .scaleEffect(0.5)
-                        Text("Scanning...")
-                            .font(.system(size: 9))
-                            .foregroundColor(.secondary)
+                            .scaleEffect(0.6)
+                            .tint(Colors.accent)
+                        
+                        Text("Scanning ports...")
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundColor(Colors.textSecondary)
                     }
-                    .padding(.horizontal, 10)
-                    .transition(.opacity)
+                    .padding(.horizontal, 16)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
                 }
             }
-            .padding(.bottom, 6)
-            .background(Color(NSColor.windowBackgroundColor))
+            .padding(.bottom, 8)
+            .background(
+                LinearGradient(
+                    colors: [Colors.background, Colors.background.opacity(0.98)],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
             
-            Divider()
-                .padding(.horizontal, 10)
             
-            // Process List
+            // Elegant divider
+            Rectangle()
+                .fill(
+                    LinearGradient(
+                        colors: [Colors.textSecondary.opacity(0.3), Colors.textSecondary.opacity(0.1)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+                .frame(height: 1)
+                .padding(.horizontal, 16)
+            
+            // Process List with enhanced design
             ScrollView {
-                LazyVStack(spacing: 4) {
+                LazyVStack(spacing: 6) {
                     if viewModel.processes.isEmpty && !viewModel.isScanning {
-                        HStack {
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.system(size: 12))
-                                .foregroundColor(.green)
-                            Text("No processes on monitored ports")
-                                .font(.system(size: 10))
-                                .foregroundColor(.secondary)
+                        // Empty state with better design
+                        VStack(spacing: 12) {
+                            ZStack {
+                                Circle()
+                                    .fill(Colors.success.opacity(0.1))
+                                    .frame(width: 48, height: 48)
+                                
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 24, weight: .medium))
+                                    .foregroundColor(Colors.success)
+                            }
+                            
+                            VStack(spacing: 4) {
+                                Text("All Clear!")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundColor(Colors.textPrimary)
+                                
+                                Text("No processes running on monitored ports")
+                                    .font(.system(size: 10))
+                                    .foregroundColor(Colors.textSecondary)
+                                    .multilineTextAlignment(.center)
+                            }
                         }
-                        .padding(.vertical, 20)
+                        .padding(.vertical, 24)
+                        .frame(maxWidth: .infinity)
                     } else {
                         ForEach(viewModel.processes, id: \.id) { process in
                             ProcessRowView(
@@ -93,24 +187,34 @@ struct MenuBarView: View {
                                     killProcess(process)
                                 }
                             )
-                            .padding(.horizontal, 8)
+                            .padding(.horizontal, 12)
                         }
                     }
                 }
-                .padding(.vertical, 6)
+                .padding(.vertical, 8)
             }
-            .frame(height: 150)
+            .frame(height: 160)
             
-            Divider()
-                .padding(.horizontal, 10)
             
-            // Compact Footer
+            // Elegant divider
+            Rectangle()
+                .fill(
+                    LinearGradient(
+                        colors: [Colors.textSecondary.opacity(0.3), Colors.textSecondary.opacity(0.1)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+                .frame(height: 1)
+                .padding(.horizontal, 16)
+            
+            // Modern Footer
             HStack(spacing: 12) {
                 Button("Settings") {
-                    // TODO: Open settings
+                    showSettings = true
                 }
-                .font(.system(size: 10))
-                .foregroundColor(.blue)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(Colors.accent)
                 .buttonStyle(PlainButtonStyle())
                 
                 Spacer()
@@ -118,23 +222,27 @@ struct MenuBarView: View {
                 Button("Quit") {
                     NSApp.terminate(nil)
                 }
-                .font(.system(size: 10))
-                .foregroundColor(.red)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(Colors.danger)
                 .buttonStyle(PlainButtonStyle())
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(Colors.background.opacity(0.5))
         }
-        .frame(width: 280, height: 250)
-        .background(Color(NSColor.windowBackgroundColor))
+        .frame(width: 300, height: 280)
+        .background(Colors.background)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
         .onAppear {
-            // Initial scan when popover opens
             refreshProcesses()
         }
         .onDisappear {
-            // Cancel any ongoing scan task when view disappears
             scanTask?.cancel()
             scanTask = nil
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
     }
     
@@ -161,43 +269,107 @@ struct ProcessRowView: View {
     @State private var isHovered = false
     @State private var killTask: Task<Void, Never>?
     
+    // Design System Colors (reused from parent)
+    private struct Colors {
+        static let primary = Color(red: 0.09, green: 0.11, blue: 0.15)
+        static let secondary = Color(red: 0.13, green: 0.16, blue: 0.21)
+        static let accent = Color(red: 0.27, green: 0.54, blue: 1.0)
+        static let success = Color(red: 0.2, green: 0.78, blue: 0.35)
+        static let warning = Color(red: 1.0, green: 0.58, blue: 0.0)
+        static let danger = Color(red: 1.0, green: 0.23, blue: 0.19)
+        static let textPrimary = Color.primary
+        static let textSecondary = Color.secondary
+        static let surface = Color(NSColor.controlBackgroundColor)
+        static let background = Color(NSColor.windowBackgroundColor)
+    }
+    
     var body: some View {
-        HStack(spacing: 6) {
-            // Port indicator
-            Text("\(process.port)")
-                .font(.system(size: 10, weight: .medium, design: .monospaced))
-                .foregroundColor(.blue)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(Color.blue.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 4))
-            
-            VStack(alignment: .leading, spacing: 1) {
-                Text(process.name)
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundColor(.primary)
-                    .lineLimit(1)
+        HStack(spacing: 10) {
+            // Port badge with modern design
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(
+                        LinearGradient(
+                            colors: [Colors.accent, Colors.accent.opacity(0.8)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 44, height: 28)
                 
-                Text("PID: \(process.pid)")
-                    .font(.system(size: 8))
-                    .foregroundColor(.secondary)
+                Text("\(process.port)")
+                    .font(.system(size: 11, weight: .bold, design: .monospaced))
+                    .foregroundColor(.white)
+            }
+            
+            // Process info
+            VStack(alignment: .leading, spacing: 2) {
+                Text(process.name)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundColor(Colors.textPrimary)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                
+                HStack(spacing: 4) {
+                    Text("PID")
+                        .font(.system(size: 9, weight: .medium))
+                        .foregroundColor(Colors.textSecondary)
+                    
+                    Text("\(process.pid)")
+                        .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                        .foregroundColor(Colors.textSecondary)
+                }
             }
             
             Spacer()
             
-            // Kill button
+            // Kill button with enhanced design
             Button(action: handleKillAction) {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 12))
-                    .foregroundColor(.red)
+                ZStack {
+                    Circle()
+                        .fill(
+                            isHovered ? 
+                            LinearGradient(
+                                colors: [Colors.danger, Colors.danger.opacity(0.8)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ) :
+                            LinearGradient(
+                                colors: [Colors.danger.opacity(0.7), Colors.danger.opacity(0.5)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 24, height: 24)
+                    
+                    Image(systemName: "xmark")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundColor(.white)
+                }
             }
             .buttonStyle(PlainButtonStyle())
-            .opacity(isHovered ? 1.0 : 0.6)
+            .scaleEffect(isHovered ? 1.1 : 1.0)
+            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isHovered)
         }
-        .padding(.horizontal, 6)
-        .padding(.vertical, 4)
-        .background(isHovered ? Color(NSColor.controlBackgroundColor) : Color.clear)
-        .clipShape(RoundedRectangle(cornerRadius: 6))
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(
+                    isHovered ? 
+                    Colors.surface.opacity(0.8) : 
+                    Colors.surface.opacity(0.3)
+                )
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(
+                    isHovered ? Colors.accent.opacity(0.3) : Color.clear,
+                    lineWidth: 1
+                )
+        )
+        .scaleEffect(isHovered ? 1.02 : 1.0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isHovered)
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.2)) {
                 isHovered = hovering
@@ -227,5 +399,6 @@ extension Animation {
 
 #Preview {
     MenuBarView()
-        .frame(width: 280, height: 250)
+        .frame(width: 300, height: 280)
+        .background(Color(NSColor.windowBackgroundColor))
 }
