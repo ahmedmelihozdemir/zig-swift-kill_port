@@ -31,15 +31,12 @@ struct swift_frontendApp: App {
     }
     
     var body: some Scene {
-        // Keep a minimal window to prevent the app from terminating
-        WindowGroup {
-            ContentView()
-                .frame(width: 1, height: 1)
-                .opacity(0)
+        // Empty scene - menu bar only app
+        Settings {
+            EmptyView()
         }
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
-        .defaultSize(width: 1, height: 1)
-        .windowLevel(.floating)
+        .defaultSize(width: 0, height: 0)
     }
 }
