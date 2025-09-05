@@ -29,6 +29,7 @@ playground.xcworkspace
 # hence it is not needed unless you have added a package configuration file to your project
 # .swiftpm
 
+# Build artifacts
 .build/
 
 # CocoaPods
@@ -60,3 +61,64 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+# Build directories and cache files
+**/build/
+**/Build/
+**/DerivedData/
+build/
+Build/
+DerivedData/
+
+# Zig build artifacts
+zig-backend/zig-out/
+zig-backend/zig-cache/
+**/zig-out/
+**/zig-cache/
+
+# Swift build artifacts  
+swift-frontend/build/
+swift-frontend/Build/
+swift-frontend/**/build/
+swift-frontend/**/Build/
+
+# Xcode DerivedData
+**/Library/Developer/Xcode/DerivedData/
+
+# Module cache
+**/ModuleCache.noindex/
+ModuleCache.noindex/
+
+# SDK Stat Caches
+**/SDKStatCaches.noindex/
+SDKStatCaches.noindex/
+
+# App binaries (keep source, ignore compiled)
+*.app
+*.dSYM
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.swp
+*.swo
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Local configuration
+*.local
+.env.local
