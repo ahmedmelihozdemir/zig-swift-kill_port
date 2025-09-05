@@ -81,18 +81,7 @@ port-kill --kill-all
 port-kill-console
 ```
 
-## 📖 Documentation
-
-- **[User Guide](docs/USER_GUIDE.md)**: Comprehensive usage instructions and troubleshooting
-- **[Architecture Guide](docs/ARCHITECTURE.md)**: Technical details about Swift and Zig components
-- **[Development Guide](docs/DEVELOPMENT.md)**: Setup instructions for contributors
-- **[API Reference](docs/API.md)**: Complete API documentation for both frontend and backend
-- **[Contributing Guidelines](CONTRIBUTING.md)**: How to contribute to the project
-- **[Changelog](CHANGELOG.md)**: Version history and release notes
-
-## 🛠 Development
-
-For development setup and technical details, see our [Development Guide](docs/DEVELOPMENT.md) and [Architecture Guide](docs/ARCHITECTURE.md).
+##  Development
 
 ### Quick Setup
 
@@ -135,12 +124,10 @@ We welcome contributions! This project offers opportunities for both Swift front
 - 🔧 **New Features**: Additional monitoring capabilities
 
 ### Getting Started
-1. **Read the guides**: [Development Guide](docs/DEVELOPMENT.md) and [Architecture Guide](docs/ARCHITECTURE.md)
-2. **Check issues**: Look for good first issues on GitHub
-3. **Join discussions**: Participate in project discussions
-4. **Submit PRs**: Follow our [Contributing Guidelines](CONTRIBUTING.md)
-
-For detailed contribution instructions, see [CONTRIBUTING.md](CONTRIBUTING.md).
+1. **Fork the repository** and clone locally
+2. **Check issues** for good first issues on GitHub
+3. **Make your changes** and test thoroughly
+4. **Submit a Pull Request** with clear description
 
 ## 📄 License
 
