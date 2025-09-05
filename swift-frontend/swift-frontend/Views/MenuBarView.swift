@@ -149,16 +149,9 @@ struct MenuBarView: View {
                 .animation(.easeInOut(duration: 0.2), value: viewModel.isScanning)
             }
             
-            // Subtle separator instead of prominent divider
-            Rectangle()
-                .fill(Colors.textSecondary.opacity(0.1))
-                .frame(height: 0.5)
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
-            
-            // Process list with modern cards
+            // Process list with modern cards - no separator needed
             ScrollView {
-                LazyVStack(spacing: 6) {
+                LazyVStack(spacing: 3) {
                     if viewModel.processes.isEmpty && !viewModel.isScanning {
                         VStack(spacing: 8) {
                             Image(systemName: "magnifyingglass")
@@ -188,10 +181,10 @@ struct MenuBarView: View {
                         }
                     }
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
+                .padding(.horizontal, 12)
+                .padding(.top, 4)
             }
-            .frame(maxHeight: 180)
+            .frame(maxHeight: 160)
         }
         .background(Colors.background)
         .onAppear {
@@ -224,7 +217,7 @@ struct ProcessRowView: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            // Process icon with color coding
+            // Process icon with color coding - smaller size
             ZStack {
                 Circle()
                     .fill(
@@ -234,38 +227,38 @@ struct ProcessRowView: View {
                             endPoint: .bottomTrailing
                         )
                     )
-                    .frame(width: 32, height: 32)
+                    .frame(width: 24, height: 24)
                 
                 Image(systemName: "gear.circle.fill")
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.system(size: 10, weight: .medium))
                     .foregroundColor(MenuBarView.Colors.accent)
             }
             
-            // Process info
-            VStack(alignment: .leading, spacing: 2) {
+            // Process info - more compact layout
+            VStack(alignment: .leading, spacing: 1) {
                 Text(process.name)
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.system(size: 11, weight: .semibold))
                     .foregroundColor(MenuBarView.Colors.textPrimary)
                     .lineLimit(1)
                 
-                HStack(spacing: 6) {
-                    Text("Port: \(process.port)")
-                        .font(.system(size: 10, weight: .medium, design: .monospaced))
+                HStack(spacing: 4) {
+                    Text("\(process.port)")
+                        .font(.system(size: 9, weight: .medium, design: .monospaced))
                         .foregroundColor(MenuBarView.Colors.accent)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 1)
                         .background(MenuBarView.Colors.accent.opacity(0.1))
                         .clipShape(Capsule())
                     
-                    Text("PID: \(process.pid)")
-                        .font(.system(size: 10, weight: .medium, design: .monospaced))
+                    Text("PID \(process.pid)")
+                        .font(.system(size: 9, weight: .medium, design: .monospaced))
                         .foregroundColor(MenuBarView.Colors.textSecondary)
                 }
             }
             
             Spacer()
             
-            // Kill button with enhanced design
+            // Kill button with enhanced design - smaller size
             Button(action: handleKillAction) {
                 ZStack {
                     Circle()
@@ -282,10 +275,10 @@ struct ProcessRowView: View {
                                 endPoint: .bottomTrailing
                             )
                         )
-                        .frame(width: 24, height: 24)
+                        .frame(width: 20, height: 20)
                     
                     Image(systemName: "xmark")
-                        .font(.system(size: 10, weight: .bold))
+                        .font(.system(size: 8, weight: .bold))
                         .foregroundColor(.white)
                 }
             }
@@ -293,10 +286,10 @@ struct ProcessRowView: View {
             .scaleEffect(isHovered ? 1.1 : 1.0)
             .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isHovered)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
         .background(
-            RoundedRectangle(cornerRadius: 10)
+            RoundedRectangle(cornerRadius: 8)
                 .fill(
                     isHovered ? 
                     MenuBarView.Colors.surface.opacity(0.8) : 
@@ -304,7 +297,7 @@ struct ProcessRowView: View {
                 )
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 10)
+            RoundedRectangle(cornerRadius: 8)
                 .stroke(
                     isHovered ? MenuBarView.Colors.accent.opacity(0.3) : Color.clear,
                     lineWidth: 1
