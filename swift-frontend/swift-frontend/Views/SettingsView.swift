@@ -34,8 +34,8 @@ struct SettingsView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Modern Header with gradient
-            VStack(alignment: .leading, spacing: 12) {
+            // Compact Header
+            VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     ZStack {
                         Circle()
@@ -46,20 +46,20 @@ struct SettingsView: View {
                                     endPoint: .bottomTrailing
                                 )
                             )
-                            .frame(width: 40, height: 40)
+                            .frame(width: 24, height: 24)
                         
                         Image(systemName: "gear")
-                            .font(.system(size: 18, weight: .semibold))
+                            .font(.system(size: 12, weight: .semibold))
                             .foregroundColor(.white)
                     }
                     
-                    VStack(alignment: .leading, spacing: 3) {
+                    VStack(alignment: .leading, spacing: 1) {
                         Text("Settings")
-                            .font(.system(size: 22, weight: .bold))
+                            .font(.system(size: 14, weight: .bold))
                             .foregroundColor(Colors.textPrimary)
                         
-                        Text("Configure Port Monitor preferences")
-                            .font(.system(size: 13))
+                        Text("Configure preferences")
+                            .font(.system(size: 10))
                             .foregroundColor(Colors.textSecondary)
                     }
                     
@@ -71,73 +71,56 @@ struct SettingsView: View {
                         ZStack {
                             Circle()
                                 .fill(Colors.surface)
-                                .frame(width: 28, height: 28)
+                                .frame(width: 20, height: 20)
                             
                             Image(systemName: "xmark")
-                                .font(.system(size: 12, weight: .medium))
+                                .font(.system(size: 8, weight: .medium))
                                 .foregroundColor(Colors.textSecondary)
                         }
                     }
                     .buttonStyle(PlainButtonStyle())
                 }
-                
-                Rectangle()
-                    .fill(
-                        LinearGradient(
-                            colors: [Colors.accent.opacity(0.3), Colors.accent.opacity(0.1)],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
-                    .frame(height: 2)
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 20)
-            .padding(.bottom, 16)
-            .background(
-                LinearGradient(
-                    colors: [Colors.background, Colors.background.opacity(0.95)],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
-            
+            .padding(.horizontal, 16)
+            .padding(.top, 12)
+            .padding(.bottom, 8)
             
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 12) {
                     // Auto Refresh Settings
-                    ModernSettingsSection(
+                    CompactSettingsSection(
                         title: "Auto Refresh", 
                         icon: "arrow.clockwise",
                         iconColor: Colors.success
                     ) {
-                        VStack(alignment: .leading, spacing: 16) {
-                            ModernToggle(
+                        VStack(alignment: .leading, spacing: 8) {
+                            CompactToggle(
                                 title: "Enable auto refresh",
                                 subtitle: "Automatically scan for processes",
                                 isOn: $autoRefreshEnabled
                             )
                             
                             if autoRefreshEnabled {
-                                VStack(alignment: .leading, spacing: 12) {
+                                VStack(alignment: .leading, spacing: 6) {
                                     HStack {
                                         Text("Refresh interval")
-                                            .font(.system(size: 14, weight: .medium))
+                                            .font(.system(size: 11, weight: .medium))
                                             .foregroundColor(Colors.textPrimary)
                                         
                                         Spacer()
                                         
                                         Text("\(Int(refreshInterval))s")
-                                            .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
                                             .foregroundColor(Colors.accent)
-                                            .padding(.horizontal, 8)
-                                            .padding(.vertical, 2)
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 1)
                                             .background(Colors.accent.opacity(0.1))
                                             .clipShape(Capsule())
                                     }
                                     
                                     Slider(value: $refreshInterval, in: 1...60, step: 1)
                                         .tint(Colors.accent)
+                                        .scaleEffect(0.9)
                                 }
                                 .transition(.opacity.combined(with: .move(edge: .top)))
                             }
@@ -145,108 +128,93 @@ struct SettingsView: View {
                     }
                     
                     // Notification Settings
-                    ModernSettingsSection(
+                    CompactSettingsSection(
                         title: "Notifications", 
                         icon: "bell.fill",
                         iconColor: Colors.warning
                     ) {
-                        VStack(alignment: .leading, spacing: 16) {
-                            ModernToggle(
+                        VStack(alignment: .leading, spacing: 8) {
+                            CompactToggle(
                                 title: "Show notifications",
-                                subtitle: "Get notified about process kills and errors",
+                                subtitle: "Get notified about process kills",
                                 isOn: $showNotifications
                             )
                         }
                     }
                     
-                    // Appearance Settings
-                    ModernSettingsSection(
-                        title: "Appearance", 
-                        icon: "paintbrush.fill",
-                        iconColor: Colors.accent
-                    ) {
-                        VStack(alignment: .leading, spacing: 16) {
-                            ModernToggle(
-                                title: "Minimalist mode",
-                                subtitle: "Reduce visual elements for cleaner interface",
-                                isOn: $minimalistMode
-                            )
-                        }
-                    }
-                    
                     // Monitored Ports Settings
-                    ModernSettingsSection(
+                    CompactSettingsSection(
                         title: "Monitored Ports", 
                         icon: "network",
                         iconColor: Colors.success
                     ) {
-                        VStack(alignment: .leading, spacing: 16) {
-                            Text("Active monitoring ports")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(Colors.textPrimary)
-                            
+                        VStack(alignment: .leading, spacing: 8) {
                             // Current ports grid
-                            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 4), spacing: 10) {
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 5), spacing: 6) {
                                 ForEach(monitoredPorts, id: \.self) { port in
-                                    ModernPortBadge(port: port) {
+                                    CompactPortBadge(port: port) {
                                         removePort(port)
                                     }
                                 }
                             }
                             
                             // Add new port
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Add New Port")
-                                    .font(.system(size: 12, weight: .semibold))
-                                    .foregroundColor(Colors.textSecondary)
-                                
-                                HStack(spacing: 12) {
-                                    TextField("Enter port number (e.g., 3000, 8080)", text: $newPort)
-                                        .textFieldStyle(ModernTextFieldStyle())
-                                        .onSubmit {
-                                            addPort()
-                                        }
-                                    
-                                    Button(action: addPort) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                HStack(spacing: 8) {
+                                    // Search-style port input
+                                    ZStack(alignment: .leading) {
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .fill(Colors.surface)
+                                            .stroke(newPort.isEmpty ? Color.clear : Colors.accent.opacity(0.3), lineWidth: 1)
+                                            .frame(height: 24)
+                                        
                                         HStack(spacing: 6) {
-                                            Image(systemName: "plus.circle.fill")
-                                                .font(.system(size: 12, weight: .medium))
-                                            Text("Add Port")
-                                                .font(.system(size: 12, weight: .semibold))
+                                            Image(systemName: "number")
+                                                .font(.system(size: 9, weight: .medium))
+                                                .foregroundColor(Colors.textSecondary)
+                                            
+                                            TextField("Add port...", text: $newPort)
+                                                .font(.system(size: 10, weight: .medium))
+                                                .textFieldStyle(PlainTextFieldStyle())
+                                                .foregroundColor(Colors.textPrimary)
+                                                .onSubmit {
+                                                    addPort()
+                                                }
                                         }
-                                        .foregroundColor(.white)
-                                        .padding(.horizontal, 16)
-                                        .padding(.vertical, 12)
-                                        .background(
-                                            LinearGradient(
-                                                colors: newPort.isEmpty ? 
-                                                [Colors.textSecondary.opacity(0.6), Colors.textSecondary.opacity(0.4)] : 
-                                                [Colors.accent, Colors.accent.opacity(0.8)],
-                                                startPoint: .topLeading,
-                                                endPoint: .bottomTrailing
-                                            )
-                                        )
-                                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                                        .shadow(
-                                            color: newPort.isEmpty ? Color.clear : Colors.accent.opacity(0.3),
-                                            radius: newPort.isEmpty ? 0 : 3,
-                                            x: 0,
-                                            y: newPort.isEmpty ? 0 : 2
-                                        )
+                                        .padding(.horizontal, 8)
+                                    }
+                                    
+                                    // Plus button
+                                    Button(action: addPort) {
+                                        ZStack {
+                                            Circle()
+                                                .fill(newPort.isEmpty ? Colors.surface : Colors.accent)
+                                                .frame(width: 24, height: 24)
+                                            
+                                            Image(systemName: "plus")
+                                                .font(.system(size: 10, weight: .bold))
+                                                .foregroundColor(newPort.isEmpty ? Colors.textSecondary : .white)
+                                        }
                                     }
                                     .disabled(newPort.isEmpty)
                                     .buttonStyle(PlainButtonStyle())
-                                    .animation(.easeInOut(duration: 0.2), value: newPort.isEmpty)
+                                    .scaleEffect(newPort.isEmpty ? 1.0 : 1.1)
+                                    .animation(.spring(response: 0.3, dampingFraction: 0.6), value: newPort.isEmpty)
+                                    
+                                    // Clear button (when text is entered)
+                                    if !newPort.isEmpty {
+                                        Button(action: { newPort = "" }) {
+                                            Image(systemName: "xmark.circle.fill")
+                                                .font(.system(size: 10))
+                                                .foregroundColor(Colors.textSecondary)
+                                        }
+                                        .buttonStyle(PlainButtonStyle())
+                                        .transition(.opacity)
+                                    }
                                 }
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Common development ports:")
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(Colors.textSecondary)
                                 
-                                Text("3000 (React), 4000 (Express), 5000 (Flask), 8000 (Django), 8080 (Tomcat)")
-                                    .font(.system(size: 11))
+                                Text("Common: 3000, 4000, 5000, 8000, 8080")
+                                    .font(.system(size: 9))
                                     .foregroundColor(Colors.textSecondary.opacity(0.8))
                             }
                         }
@@ -254,24 +222,19 @@ struct SettingsView: View {
                     
                     
                     // About Section
-                    ModernSettingsSection(
+                    CompactSettingsSection(
                         title: "About", 
                         icon: "info.circle.fill",
                         iconColor: Colors.textSecondary
                     ) {
-                        VStack(alignment: .leading, spacing: 16) {
-                            VStack(spacing: 8) {
-                                InfoRow(label: "Version", value: "1.0.0")
-                                InfoRow(label: "Author", value: "Ahmed Melih Özdemir")
-                                InfoRow(label: "Platform", value: "macOS")
+                        VStack(alignment: .leading, spacing: 8) {
+                            VStack(spacing: 4) {
+                                CompactInfoRow(label: "Version", value: "1.0.0")
+                                CompactInfoRow(label: "Platform", value: "macOS")
                             }
                             
-                            Rectangle()
-                                .fill(Colors.textSecondary.opacity(0.2))
-                                .frame(height: 1)
-                            
-                            HStack(spacing: 12) {
-                                ModernLinkButton(
+                            HStack(spacing: 8) {
+                                CompactLinkButton(
                                     title: "GitHub",
                                     icon: "link",
                                     action: {
@@ -281,8 +244,8 @@ struct SettingsView: View {
                                     }
                                 )
                                 
-                                ModernLinkButton(
-                                    title: "Report Issue",
+                                CompactLinkButton(
+                                    title: "Issues",
                                     icon: "exclamationmark.triangle",
                                     action: {
                                         if let url = URL(string: "https://github.com/ahmedmelihozdemir/zig-swift-kill_port/issues") {
@@ -294,29 +257,29 @@ struct SettingsView: View {
                         }
                     }
                 }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 24)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 16)
             }
             
-            // Modern Footer
-            HStack(spacing: 16) {
-                Button("Reset to Defaults") {
+            // Compact Footer
+            HStack(spacing: 12) {
+                Button("Reset") {
                     resetToDefaults()
                 }
-                .buttonStyle(ModernSecondaryButtonStyle())
+                .buttonStyle(CompactSecondaryButtonStyle())
                 
                 Spacer()
                 
                 Button("Done") {
                     dismiss()
                 }
-                .buttonStyle(ModernPrimaryButtonStyle())
+                .buttonStyle(CompactPrimaryButtonStyle())
             }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 16)
-            .background(Colors.surface.opacity(0.5))
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(Colors.surface.opacity(0.3))
         }
-        .frame(width: 560, height: 680)
+        .frame(width: 400, height: 480)
         .background(Colors.background)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(color: Color.black.opacity(0.15), radius: 12, x: 0, y: 6)
@@ -365,9 +328,9 @@ struct SettingsView: View {
     }
 }
 
-// MARK: - Modern UI Components
+// MARK: - Compact UI Components
 
-struct ModernSettingsSection<Content: View>: View {
+struct CompactSettingsSection<Content: View>: View {
     let title: String
     let icon: String
     let iconColor: Color
@@ -381,51 +344,51 @@ struct ModernSettingsSection<Content: View>: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 12) {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
                 ZStack {
                     Circle()
                         .fill(iconColor.opacity(0.15))
-                        .frame(width: 32, height: 32)
+                        .frame(width: 20, height: 20)
                     
                     Image(systemName: icon)
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.system(size: 9, weight: .semibold))
                         .foregroundColor(iconColor)
                 }
                 
                 Text(title)
-                    .font(.system(size: 16, weight: .bold))
+                    .font(.system(size: 12, weight: .bold))
                     .foregroundColor(SettingsView.Colors.textPrimary)
             }
             
             content
         }
-        .padding(20)
+        .padding(12)
         .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(SettingsView.Colors.surface.opacity(0.5))
+            RoundedRectangle(cornerRadius: 8)
+                .fill(SettingsView.Colors.surface.opacity(0.3))
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: 8)
                 .stroke(SettingsView.Colors.textSecondary.opacity(0.1), lineWidth: 1)
         )
     }
 }
 
-struct ModernToggle: View {
+struct CompactToggle: View {
     let title: String
     let subtitle: String
     @Binding var isOn: Bool
     
     var body: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 1) {
                 Text(title)
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.system(size: 11, weight: .medium))
                     .foregroundColor(SettingsView.Colors.textPrimary)
                 
                 Text(subtitle)
-                    .font(.system(size: 12))
+                    .font(.system(size: 9))
                     .foregroundColor(SettingsView.Colors.textSecondary)
             }
             
@@ -433,31 +396,31 @@ struct ModernToggle: View {
             
             Toggle("", isOn: $isOn)
                 .toggleStyle(SwitchToggleStyle(tint: SettingsView.Colors.accent))
-                .scaleEffect(0.9)
+                .scaleEffect(0.8)
         }
     }
 }
 
-struct ModernPortBadge: View {
+struct CompactPortBadge: View {
     let port: Int
     let onRemove: () -> Void
     @State private var isHovered = false
     
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 4) {
             Text("\(port)")
-                .font(.system(size: 12, weight: .bold, design: .monospaced))
+                .font(.system(size: 10, weight: .bold, design: .monospaced))
                 .foregroundColor(.white)
             
             Button(action: onRemove) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 8, weight: .bold))
+                    .font(.system(size: 6, weight: .bold))
                     .foregroundColor(.white.opacity(0.9))
             }
             .buttonStyle(PlainButtonStyle())
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 6)
+        .padding(.horizontal, 6)
+        .padding(.vertical, 3)
         .background(
             LinearGradient(
                 colors: isHovered ? [SettingsView.Colors.danger, SettingsView.Colors.danger.opacity(0.8)] : [SettingsView.Colors.accent, SettingsView.Colors.accent.opacity(0.8)],
@@ -474,27 +437,21 @@ struct ModernPortBadge: View {
     }
 }
 
-struct ModernTextFieldStyle: TextFieldStyle {
+struct CompactTextFieldStyle: TextFieldStyle {
     @State private var isFocused = false
     
     func _body(configuration: TextField<Self._Label>) -> some View {
         configuration
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
-            .font(.system(size: 13, weight: .medium))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 6)
+            .font(.system(size: 10, weight: .medium))
             .foregroundColor(SettingsView.Colors.textPrimary)
             .background(
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: 6)
                     .fill(SettingsView.Colors.surface)
                     .stroke(
                         isFocused ? SettingsView.Colors.accent.opacity(0.5) : SettingsView.Colors.textSecondary.opacity(0.2),
-                        lineWidth: isFocused ? 2 : 1
-                    )
-                    .shadow(
-                        color: isFocused ? SettingsView.Colors.accent.opacity(0.1) : Color.black.opacity(0.02),
-                        radius: isFocused ? 3 : 1,
-                        x: 0,
-                        y: isFocused ? 1 : 0.5
+                        lineWidth: 1
                     )
             )
             .onTapGesture {
@@ -506,26 +463,26 @@ struct ModernTextFieldStyle: TextFieldStyle {
     }
 }
 
-struct InfoRow: View {
+struct CompactInfoRow: View {
     let label: String
     let value: String
     
     var body: some View {
         HStack {
             Text(label)
-                .font(.system(size: 13, weight: .medium))
+                .font(.system(size: 10, weight: .medium))
                 .foregroundColor(SettingsView.Colors.textSecondary)
             
             Spacer()
             
             Text(value)
-                .font(.system(size: 13, weight: .semibold))
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundColor(SettingsView.Colors.textPrimary)
         }
     }
 }
 
-struct ModernLinkButton: View {
+struct CompactLinkButton: View {
     let title: String
     let icon: String
     let action: () -> Void
@@ -533,18 +490,18 @@ struct ModernLinkButton: View {
     
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 6) {
+            HStack(spacing: 4) {
                 Image(systemName: icon)
-                    .font(.system(size: 11, weight: .medium))
+                    .font(.system(size: 8, weight: .medium))
                 
                 Text(title)
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.system(size: 9, weight: .medium))
             }
             .foregroundColor(isHovered ? SettingsView.Colors.accent : SettingsView.Colors.textSecondary)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 4)
             .background(
-                RoundedRectangle(cornerRadius: 6)
+                RoundedRectangle(cornerRadius: 4)
                     .fill(isHovered ? SettingsView.Colors.accent.opacity(0.1) : Color.clear)
             )
         }
@@ -557,13 +514,13 @@ struct ModernLinkButton: View {
     }
 }
 
-struct ModernPrimaryButtonStyle: ButtonStyle {
+struct CompactPrimaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: 13, weight: .semibold))
+            .font(.system(size: 11, weight: .semibold))
             .foregroundColor(.white)
-            .padding(.horizontal, 20)
-            .padding(.vertical, 8)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 6)
             .background(
                 LinearGradient(
                     colors: [SettingsView.Colors.accent, SettingsView.Colors.accent.opacity(0.8)],
@@ -577,13 +534,13 @@ struct ModernPrimaryButtonStyle: ButtonStyle {
     }
 }
 
-struct ModernSecondaryButtonStyle: ButtonStyle {
+struct CompactSecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: 13, weight: .medium))
+            .font(.system(size: 11, weight: .medium))
             .foregroundColor(SettingsView.Colors.textSecondary)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
             .background(SettingsView.Colors.surface)
             .clipShape(Capsule())
             .overlay(

@@ -11,6 +11,7 @@ struct MenuBarView: View {
     @StateObject private var viewModel = MenuBarViewModel()
     @State private var scanTask: Task<Void, Never>?
     @State private var showSettings = false
+    @State private var searchText = ""
     
     // Design System Colors
     struct Colors {
@@ -24,6 +25,19 @@ struct MenuBarView: View {
         static let textSecondary = Color.secondary
         static let surface = Color(NSColor.controlBackgroundColor)
         static let background = Color(NSColor.windowBackgroundColor)
+    }
+    
+    private var filteredProcesses: [ProcessInfo] {
+        if searchText.isEmpty {
+            return viewModel.processes
+        } else {
+            return viewModel.processes.filter { process in
+                "\(process.port)".contains(searchText) ||
+                process.name.localizedCaseInsensitiveContains(searchText) ||
+                process.command.localizedCaseInsensitiveContains(searchText) ||
+                "\(process.pid)".contains(searchText)
+            }
+        }
     }
     
     var body: some View {
@@ -129,6 +143,39 @@ struct MenuBarView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 12)
                 
+                // Compact Search Field
+                HStack(spacing: 8) {
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(Colors.surface)
+                            .stroke(searchText.isEmpty ? Color.clear : Colors.accent.opacity(0.3), lineWidth: 1)
+                            .frame(height: 24)
+                        
+                        HStack(spacing: 6) {
+                            Image(systemName: "magnifyingglass")
+                                .font(.system(size: 9, weight: .medium))
+                                .foregroundColor(Colors.textSecondary)
+                            
+                            TextField("Search port...", text: $searchText)
+                                .font(.system(size: 10, weight: .medium))
+                                .textFieldStyle(PlainTextFieldStyle())
+                                .foregroundColor(Colors.textPrimary)
+                        }
+                        .padding(.horizontal, 8)
+                    }
+                    
+                    if !searchText.isEmpty {
+                        Button(action: { searchText = "" }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.system(size: 10))
+                                .foregroundColor(Colors.textSecondary)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
+                
                 // Fixed height container for scanning indicator to prevent UI shifting
                 VStack {
                     if viewModel.isScanning {
@@ -152,24 +199,24 @@ struct MenuBarView: View {
             // Process list with modern cards - no separator needed
             ScrollView {
                 LazyVStack(spacing: 3) {
-                    if viewModel.processes.isEmpty && !viewModel.isScanning {
+                    if filteredProcesses.isEmpty && !viewModel.isScanning {
                         VStack(spacing: 8) {
-                            Image(systemName: "magnifyingglass")
+                            Image(systemName: searchText.isEmpty ? "magnifyingglass" : "exclamationmark.magnifyingglass")
                                 .font(.system(size: 24, weight: .light))
                                 .foregroundColor(Colors.textSecondary)
                             
-                            Text("No processes found")
+                            Text(searchText.isEmpty ? "No processes found" : "No matches found")
                                 .font(.system(size: 12, weight: .medium))
                                 .foregroundColor(Colors.textSecondary)
                             
-                            Text("Try refreshing to scan for active processes")
+                            Text(searchText.isEmpty ? "Try refreshing to scan for active processes" : "Try a different search term")
                                 .font(.system(size: 10))
                                 .foregroundColor(Colors.textSecondary.opacity(0.7))
                                 .multilineTextAlignment(.center)
                         }
                         .padding(.vertical, 24)
                     } else {
-                        ForEach(viewModel.processes) { process in
+                        ForEach(filteredProcesses) { process in
                             ProcessRowView(
                                 process: process,
                                 onKill: {
