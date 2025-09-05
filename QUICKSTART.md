@@ -35,10 +35,19 @@ cd zig-swift-kill_port
 
 ## First Use
 
-1. Look for **⚡** icon in your menu bar
-2. Click to open the monitoring panel
-3. See all processes running on development ports
-4. Click any process to kill it instantly!
+1. **Open Applications folder** (⌘+Space → "Applications")
+2. **Find "Port Kill Monitor"** and double-click to launch
+3. Look for **⚡** icon in your menu bar (top right area)
+4. Click the ⚡ icon to open the monitoring panel
+5. See all processes running on development ports
+6. Click any process to kill it instantly!
+
+## Daily Usage
+
+- **Quick Launch**: ⌘+Space → type "Port Kill Monitor"
+- **Menu Bar**: Always accessible via ⚡ icon  
+- **Auto-start**: Add to Login Items in System Settings for automatic startup
+- **No Dock Icon**: This is a menu bar app - look for ⚡ in menu bar, not dock
 
 ## CLI Commands
 

@@ -45,11 +45,21 @@ chmod +x launch.sh
 ## 📱 Usage
 
 ### Menu Bar App
-1. **Launch** Port Kill Monitor from Applications
-2. **Look** for the ⚡ bolt icon in your menu bar  
-3. **Click** to open the monitoring panel
-4. **Search** for specific processes using the search bar
-5. **Kill** unwanted processes with one click
+1. **Install** using the setup script above
+2. **Find** "Port Kill Monitor" in your Applications folder
+3. **Launch** the app (it will appear in your menu bar)
+4. **Look** for the ⚡ bolt icon in your menu bar  
+5. **Click** the icon to open the monitoring panel
+6. **Search** for specific processes using the search bar
+7. **Kill** unwanted processes with one click
+
+> **Note**: The app runs as a menu bar application - you won't see a dock icon, just look for ⚡ in your menu bar!
+
+### After Installation
+- **Launch**: Open "Port Kill Monitor" from Applications folder
+- **Quick Access**: Use Spotlight (⌘+Space) and type "Port Kill Monitor"
+- **Always Available**: The app will show ⚡ icon in your menu bar
+- **Auto-start**: Add to Login Items in System Settings to start automatically
 
 ### CLI Tools
 After installation, use these commands in Terminal:
@@ -182,12 +192,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - 🐛 **Bug Reports**: [GitHub Issues](https://github.com/ahmedmelihozdemir/zig-swift-kill_port/issues)
 - 💡 **Feature Requests**: [GitHub Discussions](https://github.com/ahmedmelihozdemir/zig-swift-kill_port/discussions)
-- 📧 **Contact**: [Your Email or Contact Method]
-
----
-
-**Made with ❤️ by Ahmed Melih Özdemir**
-
-If you find this project useful, please ⭐ **star it on GitHub**!
-
-🔗 **Repository**: https://github.com/ahmedmelihozdemir/zig-swift-kill_port
+- 📧 **Contact**: [ozdemirmelihdev@gmail.com]
