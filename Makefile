@@ -13,6 +13,8 @@ help:
 	@echo "  make run        - Run the application"
 	@echo "  make clean      - Clean build artifacts"
 	@echo "  make setup      - Same as install"
+	@echo "  make uninstall  - Remove installed application"
+	@echo "  make launch     - Launch installed application"
 	@echo ""
 	@echo "📚 For more info, see: README.md or QUICKSTART.md"
 
@@ -61,3 +63,25 @@ info:
 	@echo "  Frontend: Swift/SwiftUI"
 	@echo "  Platform: macOS"
 	@echo "  Repository: https://github.com/ahmedmelihozdemir/zig-swift-kill_port"
+
+# Uninstall the application
+uninstall:
+	@echo "🗑️ Removing Port Kill Monitor..."
+	@rm -rf "/Applications/Port Kill Monitor.app" 2>/dev/null || true
+	@rm -rf "/Applications/swift-kill_port.app" 2>/dev/null || true
+	@rm -f /usr/local/bin/port-kill 2>/dev/null || true
+	@rm -f /usr/local/bin/port-kill-console 2>/dev/null || true
+	@echo "✅ Uninstall complete!"
+
+# Launch the installed application
+launch:
+	@echo "🚀 Launching Port Kill Monitor..."
+	@if [ -d "/Applications/Port Kill Monitor.app" ]; then \
+		open "/Applications/Port Kill Monitor.app"; \
+		echo "✅ Application launched!"; \
+	elif [ -d "/Applications/swift-kill_port.app" ]; then \
+		open "/Applications/swift-kill_port.app"; \
+		echo "✅ Application launched!"; \
+	else \
+		echo "❌ Application not found. Run 'make install' first."; \
+	fi

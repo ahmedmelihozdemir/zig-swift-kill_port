@@ -17,7 +17,7 @@ NC='\033[0m' # No Color
 APP_NAME="swift-kill_port"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_DIR="$PROJECT_DIR/build"
-FINAL_APP_PATH="/Applications/$APP_NAME.app"
+FINAL_APP_PATH="/Applications/Port Kill Monitor.app"
 
 # Pretty header
 echo -e "${PURPLE}"
@@ -184,20 +184,30 @@ install_application() {
     print_step "Installing Port Kill Monitor..."
     
     local source_app="$BUILD_DIR/$APP_NAME.app"
+    local final_name="Port Kill Monitor.app"
+    local final_path="/Applications/$final_name"
     
     # Remove existing installation
-    if [ -d "$FINAL_APP_PATH" ]; then
+    if [ -d "$final_path" ]; then
         print_warning "Removing existing installation..."
-        rm -rf "$FINAL_APP_PATH"
+        rm -rf "$final_path"
     fi
     
-    # Copy to Applications
-    cp -R "$source_app" "$FINAL_APP_PATH"
+    # Also remove old name if exists
+    if [ -d "/Applications/$APP_NAME.app" ]; then
+        rm -rf "/Applications/$APP_NAME.app"
+    fi
+    
+    # Copy to Applications with better name
+    cp -R "$source_app" "$final_path"
     
     # Fix permissions
-    chmod -R 755 "$FINAL_APP_PATH"
+    chmod -R 755 "$final_path"
     
-    print_status "Application installed to $FINAL_APP_PATH"
+    # Update final app path for other functions
+    FINAL_APP_PATH="$final_path"
+    
+    print_status "Application installed to $final_path"
 }
 
 # Function to create CLI symlinks
@@ -252,9 +262,15 @@ show_completion() {
     echo "   • CLI tools for automation"
     echo ""
     echo -e "${BLUE}🚀 How to use:${NC}"
-    echo "   1. Look for the ⚡ icon in your menu bar"
-    echo "   2. Click to open the monitoring panel"
-    echo "   3. View and manage running processes"
+    echo "   1. Open Applications folder and launch 'Port Kill Monitor'"
+    echo "   2. Look for the ⚡ icon in your menu bar (not dock!)"
+    echo "   3. Click the ⚡ icon to open the monitoring panel"
+    echo "   4. View and manage running processes"
+    echo ""
+    echo -e "${BLUE}💡 Quick Tips:${NC}"
+    echo "   • Use ⌘+Space and type 'Port Kill Monitor' for quick launch"
+    echo "   • Add to Login Items for auto-start"
+    echo "   • The app runs in menu bar - no dock icon"
     echo ""
     echo -e "${BLUE}💻 CLI commands:${NC}"
     echo "   • port-kill --help          # Show help"
