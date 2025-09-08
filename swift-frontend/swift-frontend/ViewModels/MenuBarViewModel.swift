@@ -70,6 +70,9 @@ class MenuBarViewModel: ObservableObject {
     
     func refreshProcesses() {
         guard !isDestroyed else { return }
+        // Update monitored ports from settings before scanning
+        portKillService.updateMonitoredPorts()
+        
         Task { [weak self] in
             await self?.scanProcesses()
         }

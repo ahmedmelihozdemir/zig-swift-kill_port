@@ -32,10 +32,10 @@ struct MenuBarView: View {
             return viewModel.processes
         } else {
             return viewModel.processes.filter { process in
-                "\(process.port)".contains(searchText) ||
+                String(process.port).contains(searchText) ||
                 process.name.localizedCaseInsensitiveContains(searchText) ||
                 process.command.localizedCaseInsensitiveContains(searchText) ||
-                "\(process.pid)".contains(searchText)
+                String(process.pid).contains(searchText)
             }
         }
     }
@@ -289,7 +289,7 @@ struct ProcessRowView: View {
                     .lineLimit(1)
                 
                 HStack(spacing: 4) {
-                    Text("\(process.port)")
+                    Text(String(process.port))
                         .font(.system(size: 9, weight: .medium, design: .monospaced))
                         .foregroundColor(MenuBarView.Colors.accent)
                         .padding(.horizontal, 4)
