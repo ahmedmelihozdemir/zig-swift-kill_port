@@ -12,11 +12,18 @@ struct SettingsView: View {
     @AppStorage("refreshInterval") private var refreshInterval = 5.0
     @AppStorage("showNotifications") private var showNotifications = true
     @AppStorage("minimalistMode") private var minimalistMode = false
-    @AppStorage("monitoredPorts") private var monitoredPortsString = "3000,3001,3002,3003,4000,5000,8000,8080,8888,9000"
+    @AppStorage("useRangeScanning") private var useRangeScanning = false
+    @AppStorage("monitoredPorts") private var monitoredPortsString = "3000,3001,3002,3003,4000,5000,5672,6379,8000,8080,8888,9000,15672"
     
     @State private var monitoredPorts: [Int] = []
     @State private var newPort: String = ""
     @Environment(\.dismiss) private var dismiss
+    
+    private let onSettingsChanged: (() -> Void)?
+    
+    init(onSettingsChanged: (() -> Void)? = nil) {
+        self.onSettingsChanged = onSettingsChanged
+    }
     
     // Design System Colors
     struct Colors {
@@ -149,6 +156,20 @@ struct SettingsView: View {
                         iconColor: Colors.success
                     ) {
                         VStack(alignment: .leading, spacing: 8) {
+                            // Scanning mode toggle
+                            CompactToggle(
+                                title: "Port Range Scanning",
+                                subtitle: useRangeScanning ? "Scanning ports 3000-9999 (\(7000) ports)" : "Monitoring specific ports only",
+                                isOn: $useRangeScanning
+                            )
+                            .onChange(of: useRangeScanning) { oldValue, newValue in
+                                UserDefaults.standard.set(newValue, forKey: "useRangeScanning")
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    onSettingsChanged?()
+                                }
+                            }
+                            
+                            if !useRangeScanning {
                             // Current ports grid
                             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 5), spacing: 6) {
                                 ForEach(monitoredPorts, id: \.self) { port in
@@ -213,10 +234,11 @@ struct SettingsView: View {
                                     }
                                 }
                                 
-                                Text("Common: 3000, 4000, 5000, 8000, 8080")
+                                Text("Common: 3000, 5672, 6379, 8000, 8080, 15672")
                                     .font(.system(size: 9))
                                     .foregroundColor(Colors.textSecondary.opacity(0.8))
                             }
+                            } // End of !useRangeScanning if block
                         }
                     }
                     
@@ -323,7 +345,7 @@ struct SettingsView: View {
         refreshInterval = 5.0
         showNotifications = true
         minimalistMode = false
-        monitoredPortsString = "3000,3001,3002,3003,4000,5000,8000,8080,8888,9000"
+        monitoredPortsString = "3000,3001,3002,3003,4000,5000,5672,6379,8000,8080,8888,9000,15672"
         loadMonitoredPorts()
     }
 }
@@ -408,7 +430,7 @@ struct CompactPortBadge: View {
     
     var body: some View {
         HStack(spacing: 4) {
-            Text("\(port)")
+            Text(String(port))
                 .font(.system(size: 10, weight: .bold, design: .monospaced))
                 .foregroundColor(.white)
             

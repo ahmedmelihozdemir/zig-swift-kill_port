@@ -32,10 +32,10 @@ struct MenuBarView: View {
             return viewModel.processes
         } else {
             return viewModel.processes.filter { process in
-                "\(process.port)".contains(searchText) ||
+                String(process.port).contains(searchText) ||
                 process.name.localizedCaseInsensitiveContains(searchText) ||
                 process.command.localizedCaseInsensitiveContains(searchText) ||
-                "\(process.pid)".contains(searchText)
+                String(process.pid).contains(searchText)
             }
         }
     }
@@ -245,12 +245,18 @@ struct MenuBarView: View {
     private func refreshProcesses() {
         scanTask?.cancel()
         scanTask = Task {
-            await viewModel.refreshProcesses()
+            viewModel.refreshProcesses()
         }
     }
     
     private func killProcess(pid: Int) async {
-        await viewModel.killProcess(ProcessInfo(pid: Int32(pid), port: 0, command: "", name: ""))
+        // Find the actual process info instead of creating a dummy one
+        guard let processInfo = viewModel.processes.first(where: { $0.pid == Int32(pid) }) else {
+            print("⚠️ Process with PID \(pid) not found in current processes")
+            return
+        }
+        
+        await viewModel.killProcess(processInfo)
     }
 }
 
@@ -289,7 +295,7 @@ struct ProcessRowView: View {
                     .lineLimit(1)
                 
                 HStack(spacing: 4) {
-                    Text("\(process.port)")
+                    Text(String(process.port))
                         .font(.system(size: 9, weight: .medium, design: .monospaced))
                         .foregroundColor(MenuBarView.Colors.accent)
                         .padding(.horizontal, 4)
