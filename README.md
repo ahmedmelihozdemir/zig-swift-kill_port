@@ -1,6 +1,6 @@
 # Port Kill Monitor ⚡
 
-A beautiful, minimalist macOS menu bar application for monitoring and managing processes on development ports. Built with Swift frontend and Zig backend for optimal performance.
+A minimalist macOS menu bar application for monitoring and managing processes on development ports. Built with Swift frontend and Zig backend for optimal performance.
 
 ![macOS](https://img.shields.io/badge/macOS-12.0+-blue) ![Swift](https://img.shields.io/badge/Swift-5.5+-orange) ![Zig](https://img.shields.io/badge/Zig-0.15+-green) ![License](https://img.shields.io/badge/License-MIT-green)
 
@@ -45,10 +45,11 @@ chmod +x launch.sh
 ## 📱 Usage
 
 ### Menu Bar App
+
 1. **Install** using the setup script above
 2. **Find** "Port Kill Monitor" in your Applications folder
 3. **Launch** the app (it will appear in your menu bar)
-4. **Look** for the ⚡ bolt icon in your menu bar  
+4. **Look** for the ⚡ bolt icon in your menu bar
 5. **Click** the icon to open the monitoring panel
 6. **Search** for specific processes using the search bar
 7. **Kill** unwanted processes with one click
@@ -56,12 +57,14 @@ chmod +x launch.sh
 > **Note**: The app runs as a menu bar application - you won't see a dock icon, just look for ⚡ in your menu bar!
 
 ### After Installation
+
 - **Launch**: Open "Port Kill Monitor" from Applications folder
 - **Quick Access**: Use Spotlight (⌘+Space) and type "Port Kill Monitor"
 - **Always Available**: The app will show ⚡ icon in your menu bar
 - **Auto-start**: Add to Login Items in System Settings to start automatically
 
 ### CLI Tools
+
 After installation, use these commands in Terminal:
 
 ```bash
@@ -74,24 +77,12 @@ port-kill --scan
 # Kill process on specific port
 port-kill --kill 3000
 
-# Kill all monitored processes  
+# Kill all monitored processes
 port-kill --kill-all
 
 # Use console version with detailed output
 port-kill-console
 ```
-
-## 🔧 Monitored Ports
-
-The application automatically monitors these common development ports:
-
-- **3000-3010**: React, Next.js, Node.js development servers
-- **4000**: Express.js, Phoenix servers
-- **5000**: Flask, Python development servers  
-- **8000**: Django, Python HTTP servers
-- **8080**: Tomcat, Jenkins, Java applications
-- **8888**: Jupyter Notebook servers
-- **9000**: Various development tools
 
 ## 🛠️ Requirements
 
@@ -100,19 +91,6 @@ The application automatically monitors these common development ports:
 - **Homebrew** (for automatic Zig installation)
 
 The setup script will automatically install missing dependencies.
-
-## 🎨 Screenshots
-
-### Menu Bar Interface
-- Clean, modern design with smooth animations
-- Real-time process monitoring  
-- One-click process termination
-- Smart search and filtering
-
-### Settings Panel
-- Customizable port monitoring
-- Auto-refresh intervals
-- Dark/light mode support
 
 ## 🏗️ Architecture
 
@@ -128,6 +106,7 @@ The setup script will automatically install missing dependencies.
 │   └── examples/          # Usage examples
 └── scripts/               # Build and setup scripts
 ```
+
 ## 🔧 Development
 
 ### Quick Development Setup
@@ -148,7 +127,7 @@ cd zig-swift-kill_port
 cd zig-backend
 zig build
 
-# Build Swift frontend  
+# Build Swift frontend
 cd ../swift-frontend
 xcodebuild -project swift-kill_port.xcodeproj -scheme swift-frontend build
 
@@ -159,34 +138,12 @@ open ~/Library/Developer/Xcode/DerivedData/*/Build/Products/Debug/swift-kill_por
 ### Project Structure
 
 - **Swift Frontend**: Modern SwiftUI interface with MVVM pattern
-- **Zig Backend**: High-performance system monitoring and process management  
+- **Zig Backend**: High-performance system monitoring and process management
 - **CLI Tools**: Command-line utilities for automation and scripting
-
-## 🤝 Contributing
-
-We welcome contributions! Here are some ways you can help:
-
-- 🎨 **UI/UX**: Improve the beautiful SwiftUI interface
-- ⚡ **Performance**: Optimize Zig backend efficiency  
-- 📚 **Documentation**: Expand guides and examples
-- 🐛 **Bug Fixes**: Help make the app more stable
-- 🌍 **Localization**: Support for multiple languages
-
-### Getting Started
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes and test thoroughly
-4. Submit a Pull Request
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Swift/SwiftUI**: For the beautiful macOS interface
-- **Zig Language**: For efficient system-level operations  
-- **macOS Community**: For inspiration and feedback
 
 ## 💬 Support
 
