@@ -32,16 +32,17 @@ enum PortKillError: Error, LocalizedError {
 }
 
 @MainActor
-class PortKillService: ObservableObject {
-    @Published var processes: [ProcessInfo] = []
-    @Published var isScanning: Bool = false
-    @Published var lastError: PortKillError?
-    @Published var statusInfo: StatusBarInfo = StatusBarInfo.fromProcessCount(0)
+final class PortKillService: ObservableObject {
+    @Published private(set) var processes: [ProcessInfo] = []
+    @Published private(set) var isScanning: Bool = false
+    @Published private(set) var lastError: PortKillError?
+    @Published private(set) var statusInfo: StatusBarInfo = StatusBarInfo.fromProcessCount(0)
     
     private var scanTimer: Timer?
     private let backendPath: String
     private var monitoredPorts: [UInt16] = []
     private var isDestroyed = false
+    private var currentScanTask: Task<Void, Never>?
     
     init(backendPath: String = "") {
         if backendPath.isEmpty {
@@ -112,43 +113,63 @@ class PortKillService: ObservableObject {
     func stopScanning() {
         scanTimer?.invalidate()
         scanTimer = nil
+        currentScanTask?.cancel()
+        currentScanTask = nil
         isScanning = false
     }
     
     func scanProcesses() async {
         guard !isDestroyed else { return }
         
-        isScanning = true
-        lastError = nil
+        // Cancel any existing scan
+        currentScanTask?.cancel()
         
-        NSLog("🔍 DEBUG: scanProcesses() called - monitoring ports: \(monitoredPorts)")
-        print("📡 Scanning ports: \(monitoredPorts)")
-        
-        do {
-            let newProcesses = try await scanPortsDirectly()
+        currentScanTask = Task { [weak self] in
+            guard let self = self else { return }
             
-            guard !isDestroyed else { return }
-            
-            NSLog("🔍 DEBUG: scanPortsDirectly() returned \(newProcesses.count) processes")
-            print("✅ Found \(newProcesses.count) processes")
-            for process in newProcesses {
-                print("   Port \(process.port): \(process.name) (PID: \(process.pid))")
+            await MainActor.run {
+                self.isScanning = true
+                self.lastError = nil
             }
             
-            self.processes = newProcesses
-            self.statusInfo = StatusBarInfo.fromProcessCount(newProcesses.count)
-            self.isScanning = false
-        } catch let error as PortKillError {
-            guard !isDestroyed else { return }
-            print("❌ PortKill error: \(error.localizedDescription)")
-            self.lastError = error
-            self.isScanning = false
-        } catch {
-            guard !isDestroyed else { return }
-            print("❌ General error: \(error)")
-            self.lastError = .commandFailed
-            self.isScanning = false
+            NSLog("🔍 DEBUG: scanProcesses() called - monitoring ports: \(self.monitoredPorts)")
+            print("📡 Scanning ports: \(self.monitoredPorts)")
+            
+            do {
+                let newProcesses = try await self.scanPortsDirectly()
+                
+                guard !self.isDestroyed else { return }
+                
+                NSLog("🔍 DEBUG: scanPortsDirectly() returned \(newProcesses.count) processes")
+                print("✅ Found \(newProcesses.count) processes")
+                for process in newProcesses {
+                    print("   Port \(process.port): \(process.name) (PID: \(process.pid))")
+                }
+                
+                await MainActor.run {
+                    self.processes = newProcesses.filter(\.isValid)
+                    self.statusInfo = StatusBarInfo.fromProcessCount(newProcesses.count)
+                    self.isScanning = false
+                }
+            } catch let error as PortKillError {
+                guard !self.isDestroyed else { return }
+                print("❌ PortKill error: \(error.localizedDescription)")
+                await MainActor.run {
+                    self.lastError = error
+                    self.isScanning = false
+                }
+            } catch {
+                guard !self.isDestroyed else { return }
+                print("❌ General error: \(error)")
+                await MainActor.run {
+                    self.lastError = .commandFailed
+                    self.isScanning = false
+                }
+            }
         }
+        
+        await currentScanTask?.value
+        currentScanTask = nil
     }
     
     private func scanPortsDirectly() async throws -> [ProcessInfo] {
@@ -289,14 +310,23 @@ class PortKillService: ObservableObject {
     }
     
     func destroy() {
+        guard !isDestroyed else { return }
+        
         isDestroyed = true
+        currentScanTask?.cancel()
+        currentScanTask = nil
         stopScanning()
+        
+        print("✅ PortKillService destroyed")
     }
     
     deinit {
-        print("PortKillService deinit called")
-        Task { @MainActor in
-            destroy()
+        print("🔄 PortKillService deinit called")
+        if !isDestroyed {
+            // Use detached task to avoid capture warnings
+            Task.detached { @MainActor [weak self] in
+                self?.destroy()
+            }
         }
     }
     

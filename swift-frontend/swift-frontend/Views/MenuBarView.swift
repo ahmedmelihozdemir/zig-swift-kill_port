@@ -245,12 +245,18 @@ struct MenuBarView: View {
     private func refreshProcesses() {
         scanTask?.cancel()
         scanTask = Task {
-            await viewModel.refreshProcesses()
+            viewModel.refreshProcesses()
         }
     }
     
     private func killProcess(pid: Int) async {
-        await viewModel.killProcess(ProcessInfo(pid: Int32(pid), port: 0, command: "", name: ""))
+        // Find the actual process info instead of creating a dummy one
+        guard let processInfo = viewModel.processes.first(where: { $0.pid == Int32(pid) }) else {
+            print("⚠️ Process with PID \(pid) not found in current processes")
+            return
+        }
+        
+        await viewModel.killProcess(processInfo)
     }
 }
 

@@ -8,7 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
-    // Design System Colors
+    // MARK: - Design System
+    
+    private enum Constants {
+        static let iconSize: CGFloat = 80
+        static let iconFontSize: CGFloat = 32
+        static let smallIconSize: CGFloat = 24
+        static let minWindowWidth: CGFloat = 400
+        static let minWindowHeight: CGFloat = 500
+        static let contentPadding: CGFloat = 32
+        static let verticalSpacing: CGFloat = 28
+    }
+    
     struct Colors {
         static let accent = Color(red: 0.27, green: 0.54, blue: 1.0)
         static let textPrimary = Color.primary
@@ -17,7 +28,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        VStack(spacing: 28) {
+        VStack(spacing: Constants.verticalSpacing) {
             // App icon with modern design
             ZStack {
                 Circle()
@@ -28,11 +39,11 @@ struct ContentView: View {
                             endPoint: .bottomTrailing
                         )
                     )
-                    .frame(width: 80, height: 80)
+                    .frame(width: Constants.iconSize, height: Constants.iconSize)
                     .shadow(color: Colors.accent.opacity(0.3), radius: 8, x: 0, y: 4)
                 
                 Image(systemName: "cpu.fill")
-                    .font(.system(size: 32, weight: .semibold))
+                    .font(.system(size: Constants.iconFontSize, weight: .semibold))
                     .foregroundColor(.white)
             }
             
@@ -54,7 +65,7 @@ struct ContentView: View {
                     ZStack {
                         Circle()
                             .fill(Colors.accent.opacity(0.1))
-                            .frame(width: 24, height: 24)
+                            .frame(width: Constants.smallIconSize, height: Constants.smallIconSize)
                         
                         Image(systemName: "cpu.fill")
                             .font(.system(size: 12, weight: .semibold))
@@ -87,8 +98,8 @@ struct ContentView: View {
                 )
             }
         }
-        .padding(32)
-        .frame(minWidth: 400, minHeight: 500)
+        .padding(Constants.contentPadding)
+        .frame(minWidth: Constants.minWindowWidth, minHeight: Constants.minWindowHeight)
         .background(Colors.background)
     }
 }

@@ -19,7 +19,7 @@ struct SettingsView: View {
     @State private var newPort: String = ""
     @Environment(\.dismiss) private var dismiss
     
-    let onSettingsChanged: (() -> Void)?
+    private let onSettingsChanged: (() -> Void)?
     
     init(onSettingsChanged: (() -> Void)? = nil) {
         self.onSettingsChanged = onSettingsChanged

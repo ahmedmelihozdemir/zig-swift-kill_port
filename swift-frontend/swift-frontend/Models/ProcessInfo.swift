@@ -19,6 +19,13 @@ struct ProcessInfo: Identifiable, Codable, Hashable, Sendable {
         self.name = name
     }
     
+    // MARK: - Validation
+    
+    /// Validates if the process info is valid
+    var isValid: Bool {
+        return pid > 0 && port > 0 && port <= 65535 && !name.isEmpty
+    }
+    
     // MARK: - Computed Properties
     
     /// Display name with port information
