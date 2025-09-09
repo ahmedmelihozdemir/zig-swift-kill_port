@@ -53,7 +53,7 @@ pub fn build(b: *std.Build) void {
     const run_console_step = b.step("run-console", "Run the console application");
     run_console_step.dependOn(&run_console.step);
 
-    // Test step
+    // Unit tests for libraries
     const test_step = b.step("test", "Run unit tests");
 
     const lib_tests = b.addTest(.{
