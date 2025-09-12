@@ -15,7 +15,35 @@ NC='\033[0m' # No Color
 
 # Configuration
 APP_NAME="swift-kill_port"
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_URL="https://github.com/ahmedmelihozdemir/zig-swift-kill_port.git"
+TEMP_DIR="/tmp/port-kill-install-$$"
+
+# Detect if we're running from a remote source (curl | bash)
+if [[ "${BASH_SOURCE[0]}" == "/dev/fd/"* ]] || [[ "${BASH_SOURCE[0]}" == *"/proc/self/fd/"* ]]; then
+    # Remote execution - clone the repository first
+    print_step "Downloading source code..."
+    
+    # Create temporary directory
+    mkdir -p "$TEMP_DIR"
+    
+    # Clone the repository
+    if command -v git &> /dev/null; then
+        git clone "$REPO_URL" "$TEMP_DIR" --depth 1 2>/dev/null || {
+            print_error "Failed to clone repository"
+            exit 1
+        }
+    else
+        print_error "Git is required but not installed"
+        exit 1
+    fi
+    
+    PROJECT_DIR="$TEMP_DIR"
+    print_status "Source code downloaded successfully"
+else
+    # Local execution
+    PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
+
 BUILD_DIR="$PROJECT_DIR/build"
 FINAL_APP_PATH="/Applications/Port Kill Monitor.app"
 
@@ -303,6 +331,11 @@ main() {
 cleanup() {
     if [ -d "$BUILD_DIR" ]; then
         rm -rf "$BUILD_DIR"
+    fi
+    
+    # Clean up temporary directory if it was created for remote execution
+    if [[ -n "$TEMP_DIR" ]] && [[ -d "$TEMP_DIR" ]]; then
+        rm -rf "$TEMP_DIR"
     fi
 }
 
