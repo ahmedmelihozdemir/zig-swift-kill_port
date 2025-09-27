@@ -14,17 +14,26 @@ class MenuBarManager: ObservableObject {
     private weak var viewModel: MenuBarViewModel?  // Weak reference to prevent retain cycle
 
     init() {
+        print("MenuBarManager initializing...")
         DispatchQueue.main.async { [weak self] in
-            self?.setupMenuBar()
-            self?.setupPopover()
+            guard let self = self else { 
+                print("Error: MenuBarManager self is nil during setup")
+                return 
+            }
+            
+            print("Setting up menu bar and popover...")
+            self.setupMenuBar()
+            self.setupPopover()
+            
+            print("MenuBarManager setup completed successfully")
         }
     }
 
     private func setupMenuBar() {
         print("Setting up menu bar...")
 
-        // Create status item with variable length for better integration
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        // Create status item with fixed length to ensure visibility
+        statusItem = NSStatusBar.system.statusItem(withLength: 28.0)
 
         guard let statusItem = statusItem else {
             print("Error: Could not create status item")
@@ -36,6 +45,9 @@ class MenuBarManager: ObservableObject {
         // Setup button
         if let button = statusItem.button {
             setupMenuBarIcon(button)
+            // Force the status item to be visible
+            statusItem.isVisible = true
+            print("Status item visibility set to: \(statusItem.isVisible)")
         } else {
             print("Error: Could not access status item button")
         }
@@ -54,12 +66,15 @@ class MenuBarManager: ObservableObject {
         popover.behavior = .transient
         popover.animates = true
 
-        // Create hosting view
+        // Create MenuBarView directly - SwiftUI will handle the view model
         let menuBarView = MenuBarView()
         let hostingController = NSHostingController(rootView: menuBarView)
+        
+        // Set content view controller
         popover.contentViewController = hostingController
 
         print("Popover configured successfully")
+        print("MenuBarView loaded into popover")
     }
 
     @objc private func togglePopover() {
@@ -119,7 +134,8 @@ class MenuBarManager: ObservableObject {
     }
 
     func updateStatusWithProcessCount(_ count: Int) {
-        let iconName = count > 0 ? "bolt.fill" : "bolt"
+        // Use network/connection icons that change based on activity
+        let iconName = count > 0 ? "antenna.radiowaves.left.and.right" : "network"
         let tooltip =
             count > 0
             ? "Port Kill Monitor - \(count) active processes"
@@ -130,25 +146,71 @@ class MenuBarManager: ObservableObject {
     // MARK: - Icon Configuration
 
     private func setupMenuBarIcon(_ button: NSStatusBarButton) {
-        // Try to load custom icon first
-        if let customImage = loadCustomMenuBarIcon() {
-            button.image = customImage
+        print("Setting up menu bar icon...")
+
+        // Clear any existing content first
+        button.image = nil
+        button.title = ""
+
+        // Try network/port related icons first - perfect for our port kill app
+        if let image = NSImage(
+            systemSymbolName: "network", accessibilityDescription: "Port Kill Monitor")
+        {
+            image.isTemplate = true
+            image.size = NSSize(width: 16, height: 16)
+            button.image = image
             button.title = ""
+            print("✅ SF Symbol network icon set successfully")
+            print("✅ Image properties - isTemplate: \(image.isTemplate), size: \(image.size)")
+        } else if let image = NSImage(
+            systemSymbolName: "point.3.connected.trianglepath.dotted",
+            accessibilityDescription: "Port Kill Monitor")
+        {
+            image.isTemplate = true
+            image.size = NSSize(width: 16, height: 16)
+            button.image = image
+            button.title = ""
+            print("✅ SF Symbol connected network icon set successfully")
+        } else if let image = NSImage(
+            systemSymbolName: "cable.connector", accessibilityDescription: "Port Kill Monitor")
+        {
+            image.isTemplate = true
+            image.size = NSSize(width: 16, height: 16)
+            button.image = image
+            button.title = ""
+            print("✅ SF Symbol cable connector icon set successfully")
+        } else if let image = NSImage(
+            systemSymbolName: "externaldrive.connected.to.line.below",
+            accessibilityDescription: "Port Kill Monitor")
+        {
+            image.isTemplate = true
+            image.size = NSSize(width: 16, height: 16)
+            button.image = image
+            button.title = ""
+            print("✅ SF Symbol external drive connected icon set successfully")
+        } else if let image = NSImage(
+            systemSymbolName: "bolt.horizontal.fill", accessibilityDescription: "Port Kill Monitor")
+        {
+            image.isTemplate = true
+            image.size = NSSize(width: 16, height: 16)
+            button.image = image
+            button.title = ""
+            print("✅ SF Symbol horizontal bolt icon set successfully")
+        } else if let image = NSImage(
+            systemSymbolName: "antenna.radiowaves.left.and.right",
+            accessibilityDescription: "Port Kill Monitor")
+        {
+            image.isTemplate = true
+            image.size = NSSize(width: 16, height: 16)
+            button.image = image
+            button.title = ""
+            print("✅ SF Symbol antenna radiowaves icon set successfully")
         } else {
-            // Use SF Symbol with better default icon
-            if let image = NSImage(
-                systemSymbolName: "bolt.fill", accessibilityDescription: "Port Kill Monitor")
-            {
-                image.isTemplate = true
-                image.size = NSSize(width: 16, height: 16)
-                button.image = image
-                button.title = ""
-            } else {
-                // Ultimate fallback
-                button.title = "⚡"
-                button.image = nil
-                button.font = NSFont.systemFont(ofSize: 14)
-            }
+            // Ultimate fallback - port/connection related
+            button.title = "◉"  // Circle with dot - represents port/connection
+            button.image = nil
+            button.font = NSFont.systemFont(ofSize: 14, weight: .medium)
+            print("⚠️ Using connection symbol fallback icon")
         }
 
         // Set action and tooltip
@@ -156,24 +218,55 @@ class MenuBarManager: ObservableObject {
         button.target = self
         button.toolTip = "Port Kill Monitor - Click to open"
 
+        // Ensure button is enabled and visible
+        button.appearsDisabled = false
+
         print("Menu bar icon configured successfully")
+        print("Final button title: '\(button.title)'")
+        print("Final button image: \(button.image?.description ?? "nil")")
+        print("Final button image isTemplate: \(button.image?.isTemplate ?? false)")
+
+        // Force a display update
+        button.needsDisplay = true
+        button.display()
     }
 
     private func loadCustomMenuBarIcon() -> NSImage? {
         // Method 1: Try to load from Assets catalog with correct name
-        if let image = NSImage(named: "MenuBarIcon") {
+        if let originalImage = NSImage(named: "MenuBarIcon") {
             print("✓ Loaded MenuBarIcon from Assets catalog")
-            image.isTemplate = false  // Don't use template mode to preserve colors
-            image.size = NSSize(width: 16, height: 16)
-            return image
+
+            // Create a properly sized copy for menu bar
+            let menuBarSize = NSSize(width: 16, height: 16)
+            let resizedImage = NSImage(size: menuBarSize)
+
+            resizedImage.lockFocus()
+            originalImage.draw(
+                in: NSRect(origin: .zero, size: menuBarSize),
+                from: NSRect(origin: .zero, size: originalImage.size),
+                operation: .sourceOver,
+                fraction: 1.0)
+            resizedImage.unlockFocus()
+
+            // Use template mode for proper macOS menu bar appearance
+            resizedImage.isTemplate = true
+
+            print("✓ MenuBarIcon processed with template mode - size: \(resizedImage.size)")
+            return resizedImage
         }
 
         // Method 2: Try to load 16x16 PNG directly from Assets catalog
-        if let image = NSImage(named: "MenuBarIcon_16x16") {
+        if let originalImage = NSImage(named: "MenuBarIcon_16x16") {
             print("✓ Loaded MenuBarIcon_16x16 from Assets catalog")
-            image.isTemplate = false  // Don't use template mode to preserve colors
-            image.size = NSSize(width: 16, height: 16)
-            return image
+
+            // Create a copy and set proper template mode
+            let menuBarImage = NSImage(size: NSSize(width: 16, height: 16))
+            menuBarImage.lockFocus()
+            originalImage.draw(in: NSRect(x: 0, y: 0, width: 16, height: 16))
+            menuBarImage.unlockFocus()
+
+            menuBarImage.isTemplate = true
+            return menuBarImage
         }
 
         // Method 3: Try to load from app bundle Resources (compiled PNG)
@@ -184,11 +277,16 @@ class MenuBarManager: ObservableObject {
             ]
 
             for path in possiblePaths {
-                if let customImage = NSImage(contentsOfFile: path) {
+                if let originalImage = NSImage(contentsOfFile: path) {
                     print("✓ Loaded custom icon from: \(path)")
-                    customImage.isTemplate = true
-                    customImage.size = NSSize(width: 16, height: 16)
-                    return customImage
+
+                    let menuBarImage = NSImage(size: NSSize(width: 16, height: 16))
+                    menuBarImage.lockFocus()
+                    originalImage.draw(in: NSRect(x: 0, y: 0, width: 16, height: 16))
+                    menuBarImage.unlockFocus()
+
+                    menuBarImage.isTemplate = true
+                    return menuBarImage
                 }
             }
         }
