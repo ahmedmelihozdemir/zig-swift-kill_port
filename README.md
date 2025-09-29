@@ -1,152 +1,66 @@
-# Port Kill Monitor ⚡
+# Port Kill Monitor
 
-A minimalist macOS menu bar application for monitoring and managing processes on development ports. Built with Swift frontend and Zig backend for optimal performance.
+A macOS menu bar application for monitoring and managing processes on development ports. Built with Swift frontend and Zig backend.
 
 ![macOS](https://img.shields.io/badge/macOS-12.0+-blue) ![Swift](https://img.shields.io/badge/Swift-5.5+-orange) ![Zig](https://img.shields.io/badge/Zig-0.15+-green) ![License](https://img.shields.io/badge/License-MIT-green)
 
-## ✨ Features
+## Features
 
-- 🎨 **Beautiful Interface**: Clean, modern menu bar design
-- ⚡ **Real-time Monitoring**: Automatically scans development ports (3000, 8080, etc.)
-- 🎯 **One-Click Kill**: Terminate processes instantly
-- 🔍 **Smart Search**: Filter processes by port or name
-- 📱 **Menu Bar App**: Quick access from your menu bar
-- � **CLI Tools**: Command-line interface for automation
+- Real-time monitoring of development ports (3000, 8080, etc.)
+- One-click process termination
+- Search and filter processes
+- Menu bar integration
+- Command-line interface
 
-## 🚀 Quick Installation
+## Installation
 
-### Option 1: One-Click Setup (Recommended)
+### Quick Setup
 
 ```bash
-# Download and run the setup script
 curl -fsSL https://raw.githubusercontent.com/ahmedmelihozdemir/zig-swift-kill_port/main/setup.sh | bash
 ```
 
-### Option 2: Manual Installation
+### Manual Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/ahmedmelihozdemir/zig-swift-kill_port.git
 cd zig-swift-kill_port
-
-# Run the setup script
 chmod +x setup.sh
 ./setup.sh
 ```
 
-### Option 3: Development Mode
-
-```bash
-# Quick build and run for development
-chmod +x launch.sh
-./launch.sh
-```
-
-## 📱 Usage
+## Usage
 
 ### Menu Bar App
 
-1. **Install** using the setup script above
-2. **Find** "Port Kill Monitor" in your Applications folder
-3. **Launch** the app (it will appear in your menu bar)
-4. **Look** for the ⚡ bolt icon in your menu bar
-5. **Click** the icon to open the monitoring panel
-6. **Search** for specific processes using the search bar
-7. **Kill** unwanted processes with one click
+1. Install using the setup script
+2. Launch "Port Kill Monitor" from Applications
+3. Click the bolt icon in your menu bar
+4. Search and kill processes as needed
 
-> **Note**: The app runs as a menu bar application - you won't see a dock icon, just look for ⚡ in your menu bar!
-
-### After Installation
-
-- **Launch**: Open "Port Kill Monitor" from Applications folder
-- **Quick Access**: Use Spotlight (⌘+Space) and type "Port Kill Monitor"
-- **Always Available**: The app will show ⚡ icon in your menu bar
-- **Auto-start**: Add to Login Items in System Settings to start automatically
-
-### CLI Tools
-
-After installation, use these commands in Terminal:
+### CLI Commands
 
 ```bash
-# Show help
 port-kill --help
-
-# Scan for processes on monitored ports
 port-kill --scan
-
-# Kill process on specific port
 port-kill --kill 3000
-
-# Kill all monitored processes
 port-kill --kill-all
-
-# Use console version with detailed output
-port-kill-console
 ```
 
-## 🛠️ Requirements
+## Requirements
 
-- **macOS 12.0+** (Monterey or later)
-- **Xcode Command Line Tools**
-- **Homebrew** (for automatic Zig installation)
+- macOS 12.0+
+- Xcode Command Line Tools
+- Homebrew
 
-The setup script will automatically install missing dependencies.
-
-## 🏗️ Architecture
-
-```
-├── swift-frontend/          # macOS SwiftUI app (MVVM pattern)
-│   ├── Views/              # User interface components
-│   ├── ViewModels/         # Business logic
-│   ├── Services/           # Backend communication
-│   └── Models/             # Data structures
-├── zig-backend/            # High-performance system monitoring
-│   ├── src/               # Core Zig source code
-│   ├── lib/               # Reusable modules
-│   └── examples/          # Usage examples
-└── scripts/               # Build and setup scripts
-```
-
-## 🔧 Development
-
-### Quick Development Setup
+## Development
 
 ```bash
-# Clone and start developing immediately
 git clone https://github.com/ahmedmelihozdemir/zig-swift-kill_port.git
 cd zig-swift-kill_port
-
-# Quick build and run
 ./launch.sh
 ```
 
-### Manual Build Steps
+## License
 
-```bash
-# Build Zig backend
-cd zig-backend
-zig build
-
-# Build Swift frontend
-cd ../swift-frontend
-xcodebuild -project swift-kill_port.xcodeproj -scheme swift-frontend build
-
-# Launch the app
-open ~/Library/Developer/Xcode/DerivedData/*/Build/Products/Debug/swift-kill_port.app
-```
-
-### Project Structure
-
-- **Swift Frontend**: Modern SwiftUI interface with MVVM pattern
-- **Zig Backend**: High-performance system monitoring and process management
-- **CLI Tools**: Command-line utilities for automation and scripting
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 💬 Support
-
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/ahmedmelihozdemir/zig-swift-kill_port/issues)
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/ahmedmelihozdemir/zig-swift-kill_port/discussions)
-- 📧 **Contact**: [ozdemirmelihdev@gmail.com]
+MIT License - see [LICENSE](LICENSE) file for details.
