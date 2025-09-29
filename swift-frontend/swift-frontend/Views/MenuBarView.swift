@@ -12,7 +12,7 @@ struct MenuBarView: View {
     @State private var scanTask: Task<Void, Never>?
     @State private var showSettings = false
     @State private var searchText = ""
-    
+
     // Design System Colors
     struct Colors {
         static let primary = Color(red: 0.09, green: 0.11, blue: 0.15)
@@ -26,20 +26,20 @@ struct MenuBarView: View {
         static let surface = Color(NSColor.controlBackgroundColor)
         static let background = Color(NSColor.windowBackgroundColor)
     }
-    
+
     private var filteredProcesses: [ProcessInfo] {
         if searchText.isEmpty {
             return viewModel.processes
         } else {
             return viewModel.processes.filter { process in
-                String(process.port).contains(searchText) ||
-                process.name.localizedCaseInsensitiveContains(searchText) ||
-                process.command.localizedCaseInsensitiveContains(searchText) ||
-                String(process.pid).contains(searchText)
+                String(process.port).contains(searchText)
+                    || process.name.localizedCaseInsensitiveContains(searchText)
+                    || process.command.localizedCaseInsensitiveContains(searchText)
+                    || String(process.pid).contains(searchText)
             }
         }
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Modern Header with gradient
@@ -56,30 +56,44 @@ struct MenuBarView: View {
                                 )
                             )
                             .frame(width: 24, height: 24)
-                        
-                        Image(systemName: "cpu.fill")
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundColor(.white)
+
+                        // Use custom icon from asset catalog, fallback to system icon
+                        Group {
+                            if let customIcon = NSImage(named: "MenuBarIcon") {
+                                Image(nsImage: customIcon)
+                                    .resizable()
+                                    .renderingMode(.original)
+                                    .aspectRatio(contentMode: .fit)
+                            } else {
+                                Image(systemName: "cpu.fill")
+                                    .foregroundColor(.white)
+                            }
+                        }
+                        .font(.system(size: 12, weight: .semibold))
+                        .frame(width: 12, height: 12)
                     }
-                    
+
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Port Monitor")
                             .font(.system(size: 13, weight: .semibold))
                             .foregroundColor(Colors.textPrimary)
-                        
+
                         HStack(spacing: 4) {
                             Circle()
-                                .fill(viewModel.processes.isEmpty ? Colors.textSecondary : Colors.success)
+                                .fill(
+                                    viewModel.processes.isEmpty
+                                        ? Colors.textSecondary : Colors.success
+                                )
                                 .frame(width: 6, height: 6)
-                            
+
                             Text("\(viewModel.processes.count) active")
                                 .font(.system(size: 10, weight: .medium))
                                 .foregroundColor(Colors.textSecondary)
                         }
                     }
-                    
+
                     Spacer()
-                    
+
                     // Action buttons
                     HStack(spacing: 6) {
                         // Refresh button
@@ -90,15 +104,15 @@ struct MenuBarView: View {
                                 Circle()
                                     .fill(Colors.surface)
                                     .frame(width: 24, height: 24)
-                                
+
                                 Image(systemName: "arrow.clockwise")
                                     .font(.system(size: 10, weight: .medium))
                                     .foregroundColor(Colors.accent)
                                     .rotationEffect(.degrees(viewModel.isScanning ? 360 : 0))
                                     .animation(
-                                        viewModel.isScanning ? 
-                                        .linear(duration: 1).repeatForever(autoreverses: false) : 
-                                        .default,
+                                        viewModel.isScanning
+                                            ? .linear(duration: 1).repeatForever(
+                                                autoreverses: false) : .default,
                                         value: viewModel.isScanning
                                     )
                             }
@@ -106,7 +120,7 @@ struct MenuBarView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .disabled(viewModel.isScanning)
-                        
+
                         // Settings button
                         Button(action: {
                             showSettings = true
@@ -115,14 +129,14 @@ struct MenuBarView: View {
                                 Circle()
                                     .fill(Colors.surface)
                                     .frame(width: 24, height: 24)
-                                
+
                                 Image(systemName: "gearshape.fill")
                                     .font(.system(size: 10, weight: .medium))
                                     .foregroundColor(Colors.textSecondary)
                             }
                         }
                         .buttonStyle(PlainButtonStyle())
-                        
+
                         // Quit button
                         Button(action: {
                             NSApplication.shared.terminate(nil)
@@ -131,7 +145,7 @@ struct MenuBarView: View {
                                 Circle()
                                     .fill(Colors.surface)
                                     .frame(width: 24, height: 24)
-                                
+
                                 Image(systemName: "xmark.circle.fill")
                                     .font(.system(size: 10, weight: .medium))
                                     .foregroundColor(Colors.danger)
@@ -142,20 +156,23 @@ struct MenuBarView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 12)
-                
+
                 // Compact Search Field
                 HStack(spacing: 8) {
                     ZStack(alignment: .leading) {
                         RoundedRectangle(cornerRadius: 6)
                             .fill(Colors.surface)
-                            .stroke(searchText.isEmpty ? Color.clear : Colors.accent.opacity(0.3), lineWidth: 1)
+                            .stroke(
+                                searchText.isEmpty ? Color.clear : Colors.accent.opacity(0.3),
+                                lineWidth: 1
+                            )
                             .frame(height: 24)
-                        
+
                         HStack(spacing: 6) {
                             Image(systemName: "magnifyingglass")
                                 .font(.system(size: 9, weight: .medium))
                                 .foregroundColor(Colors.textSecondary)
-                            
+
                             TextField("Search port...", text: $searchText)
                                 .font(.system(size: 10, weight: .medium))
                                 .textFieldStyle(PlainTextFieldStyle())
@@ -163,7 +180,7 @@ struct MenuBarView: View {
                         }
                         .padding(.horizontal, 8)
                     }
-                    
+
                     if !searchText.isEmpty {
                         Button(action: { searchText = "" }) {
                             Image(systemName: "xmark.circle.fill")
@@ -175,7 +192,7 @@ struct MenuBarView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 8)
-                
+
                 // Fixed height container for scanning indicator to prevent UI shifting
                 VStack {
                     if viewModel.isScanning {
@@ -183,7 +200,7 @@ struct MenuBarView: View {
                             ProgressView()
                                 .scaleEffect(0.6)
                                 .tint(Colors.accent)
-                            
+
                             Text("Scanning ports...")
                                 .font(.system(size: 10, weight: .medium))
                                 .foregroundColor(Colors.textSecondary)
@@ -195,24 +212,31 @@ struct MenuBarView: View {
                 .padding(.horizontal, 16)
                 .animation(.easeInOut(duration: 0.2), value: viewModel.isScanning)
             }
-            
+
             // Process list with modern cards - no separator needed
             ScrollView {
                 LazyVStack(spacing: 3) {
                     if filteredProcesses.isEmpty && !viewModel.isScanning {
                         VStack(spacing: 8) {
-                            Image(systemName: searchText.isEmpty ? "magnifyingglass" : "exclamationmark.magnifyingglass")
-                                .font(.system(size: 24, weight: .light))
-                                .foregroundColor(Colors.textSecondary)
-                            
+                            Image(
+                                systemName: searchText.isEmpty
+                                    ? "magnifyingglass" : "exclamationmark.magnifyingglass"
+                            )
+                            .font(.system(size: 24, weight: .light))
+                            .foregroundColor(Colors.textSecondary)
+
                             Text(searchText.isEmpty ? "No processes found" : "No matches found")
                                 .font(.system(size: 12, weight: .medium))
                                 .foregroundColor(Colors.textSecondary)
-                            
-                            Text(searchText.isEmpty ? "Try refreshing to scan for active processes" : "Try a different search term")
-                                .font(.system(size: 10))
-                                .foregroundColor(Colors.textSecondary.opacity(0.7))
-                                .multilineTextAlignment(.center)
+
+                            Text(
+                                searchText.isEmpty
+                                    ? "Try refreshing to scan for active processes"
+                                    : "Try a different search term"
+                            )
+                            .font(.system(size: 10))
+                            .foregroundColor(Colors.textSecondary.opacity(0.7))
+                            .multilineTextAlignment(.center)
                         }
                         .padding(.vertical, 24)
                     } else {
@@ -241,21 +265,21 @@ struct MenuBarView: View {
             SettingsView()
         }
     }
-    
+
     private func refreshProcesses() {
         scanTask?.cancel()
         scanTask = Task {
             viewModel.refreshProcesses()
         }
     }
-    
+
     private func killProcess(pid: Int) async {
         // Find the actual process info instead of creating a dummy one
         guard let processInfo = viewModel.processes.first(where: { $0.pid == Int32(pid) }) else {
             print("⚠️ Process with PID \(pid) not found in current processes")
             return
         }
-        
+
         await viewModel.killProcess(processInfo)
     }
 }
@@ -267,7 +291,7 @@ struct ProcessRowView: View {
     let onKill: () -> Void
     @State private var isHovered = false
     @State private var killTask: Task<Void, Never>?
-    
+
     var body: some View {
         HStack(spacing: 12) {
             // Process icon with color coding - smaller size
@@ -275,25 +299,28 @@ struct ProcessRowView: View {
                 Circle()
                     .fill(
                         LinearGradient(
-                            colors: [MenuBarView.Colors.accent.opacity(0.15), MenuBarView.Colors.accent.opacity(0.05)],
+                            colors: [
+                                MenuBarView.Colors.accent.opacity(0.15),
+                                MenuBarView.Colors.accent.opacity(0.05),
+                            ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
                     )
                     .frame(width: 24, height: 24)
-                
+
                 Image(systemName: "gear.circle.fill")
                     .font(.system(size: 10, weight: .medium))
                     .foregroundColor(MenuBarView.Colors.accent)
             }
-            
+
             // Process info - more compact layout
             VStack(alignment: .leading, spacing: 1) {
                 Text(process.name)
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundColor(MenuBarView.Colors.textPrimary)
                     .lineLimit(1)
-                
+
                 HStack(spacing: 4) {
                     Text(String(process.port))
                         .font(.system(size: 9, weight: .medium, design: .monospaced))
@@ -302,34 +329,40 @@ struct ProcessRowView: View {
                         .padding(.vertical, 1)
                         .background(MenuBarView.Colors.accent.opacity(0.1))
                         .clipShape(Capsule())
-                    
+
                     Text("PID \(process.pid)")
                         .font(.system(size: 9, weight: .medium, design: .monospaced))
                         .foregroundColor(MenuBarView.Colors.textSecondary)
                 }
             }
-            
+
             Spacer()
-            
+
             // Kill button with enhanced design - smaller size
             Button(action: handleKillAction) {
                 ZStack {
                     Circle()
                         .fill(
-                            isHovered ? 
-                            LinearGradient(
-                                colors: [MenuBarView.Colors.danger, MenuBarView.Colors.danger.opacity(0.8)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ) :
-                            LinearGradient(
-                                colors: [MenuBarView.Colors.danger.opacity(0.7), MenuBarView.Colors.danger.opacity(0.5)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            isHovered
+                                ? LinearGradient(
+                                    colors: [
+                                        MenuBarView.Colors.danger,
+                                        MenuBarView.Colors.danger.opacity(0.8),
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                                : LinearGradient(
+                                    colors: [
+                                        MenuBarView.Colors.danger.opacity(0.7),
+                                        MenuBarView.Colors.danger.opacity(0.5),
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
                         )
                         .frame(width: 20, height: 20)
-                    
+
                     Image(systemName: "xmark")
                         .font(.system(size: 8, weight: .bold))
                         .foregroundColor(.white)
@@ -344,9 +377,9 @@ struct ProcessRowView: View {
         .background(
             RoundedRectangle(cornerRadius: 8)
                 .fill(
-                    isHovered ? 
-                    MenuBarView.Colors.surface.opacity(0.8) : 
-                    MenuBarView.Colors.surface.opacity(0.3)
+                    isHovered
+                        ? MenuBarView.Colors.surface.opacity(0.8)
+                        : MenuBarView.Colors.surface.opacity(0.3)
                 )
         )
         .overlay(
@@ -368,7 +401,7 @@ struct ProcessRowView: View {
             killTask = nil
         }
     }
-    
+
     private func handleKillAction() {
         killTask?.cancel()
         killTask = Task {
