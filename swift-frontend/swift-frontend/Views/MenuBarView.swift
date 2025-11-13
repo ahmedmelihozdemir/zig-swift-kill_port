@@ -1,10 +1,3 @@
-//
-//  MenuBarView.swift
-//  swift-frontend
-//
-//  Created by Melih Özdemir on 31.08.2025.
-//
-
 import SwiftUI
 
 struct MenuBarView: View {
@@ -215,7 +208,7 @@ struct MenuBarView: View {
 
             // Process list with modern cards - no separator needed
             ScrollView {
-                LazyVStack(spacing: 3) {
+                LazyVStack(spacing: 12) {
                     if filteredProcesses.isEmpty && !viewModel.isScanning {
                         VStack(spacing: 8) {
                             Image(
@@ -249,6 +242,7 @@ struct MenuBarView: View {
                                     }
                                 }
                             )
+                            .padding(.bottom, 2) 
                         }
                     }
                 }

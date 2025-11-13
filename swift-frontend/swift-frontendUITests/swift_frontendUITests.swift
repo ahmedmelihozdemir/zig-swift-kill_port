@@ -1,10 +1,3 @@
-//
-//  swift_frontendUITests.swift
-//  swift-frontendUITests
-//
-//  Created by Melih Özdemir on 31.08.2025.
-//
-
 import XCTest
 
 final class swift_frontendUITests: XCTestCase {

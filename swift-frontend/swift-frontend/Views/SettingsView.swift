@@ -1,10 +1,3 @@
-//
-//  SettingsView.swift
-//  swift-frontend
-//
-//  Created by Melih Özdemir on 31.08.2025.
-//
-
 import SwiftUI
 
 struct SettingsView: View {
@@ -13,7 +6,7 @@ struct SettingsView: View {
     @AppStorage("showNotifications") private var showNotifications = true
     @AppStorage("minimalistMode") private var minimalistMode = false
     @AppStorage("useRangeScanning") private var useRangeScanning = false
-    @AppStorage("monitoredPorts") private var monitoredPortsString = "3000,3001,3002,3003,4000,5000,5672,6379,8000,8080,8888,9000,15672"
+    @AppStorage("monitoredPorts") private var monitoredPortsString = "1446,1447,1448,1449,3000,3001,3002,3003,3004, 3005,3006,4000,5000,5672,6379,8000,8080,8888,9000,6379,6380,6381,6382,5672,15672,5673,15673,5674,15674,5675,15675,"
     
     @State private var monitoredPorts: [Int] = []
     @State private var newPort: String = ""

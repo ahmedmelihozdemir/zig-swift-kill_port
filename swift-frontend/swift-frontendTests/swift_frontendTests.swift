@@ -1,10 +1,3 @@
-//
-//  swift_frontendTests.swift
-//  swift-frontendTests
-//
-//  Created by Melih Özdemir on 31.08.2025.
-//
-
 import Testing
 @testable import swift_frontend
 

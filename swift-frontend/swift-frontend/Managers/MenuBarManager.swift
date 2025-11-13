@@ -1,10 +1,3 @@
-//
-//  MenuBarManager.swift
-//  swift-frontend
-//
-//  Created by Melih Özdemir on 31.08.2025.
-//
-
 import AppKit
 import SwiftUI
 
