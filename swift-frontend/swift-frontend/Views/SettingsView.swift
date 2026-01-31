@@ -13,9 +13,11 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     
     private let onSettingsChanged: (() -> Void)?
+    private let onDismiss: (() -> Void)?
     
-    init(onSettingsChanged: (() -> Void)? = nil) {
+    init(onSettingsChanged: (() -> Void)? = nil, onDismiss: (() -> Void)? = nil) {
         self.onSettingsChanged = onSettingsChanged
+        self.onDismiss = onDismiss
     }
     
     // Design System Colors
@@ -66,7 +68,7 @@ struct SettingsView: View {
                     Spacer()
                     
                     Button(action: {
-                        dismiss()
+                        handleDismiss()
                     }) {
                         ZStack {
                             Circle()
@@ -286,7 +288,7 @@ struct SettingsView: View {
                 Spacer()
                 
                 Button("Done") {
-                    dismiss()
+                    handleDismiss()
                 }
                 .buttonStyle(CompactPrimaryButtonStyle())
             }
@@ -303,6 +305,14 @@ struct SettingsView: View {
         }
         .onChange(of: monitoredPorts) {
             saveMonitoredPorts()
+        }
+    }
+    
+    private func handleDismiss() {
+        if let onDismiss = onDismiss {
+            onDismiss()
+        } else {
+            dismiss()
         }
     }
     

@@ -34,6 +34,35 @@ struct MenuBarView: View {
     }
 
     var body: some View {
+        ZStack {
+            // Main menu bar view
+            if !showSettings {
+                mainContentView
+                    .transition(.opacity)
+            }
+            
+            // Settings view
+            if showSettings {
+                SettingsView(
+                    onSettingsChanged: {
+                        refreshProcesses()
+                    },
+                    onDismiss: {
+                        showSettings = false
+                    }
+                )
+                .frame(width: 400, height: 480)
+                .transition(.opacity)
+            }
+        }
+        .animation(.easeInOut(duration: 0.15), value: showSettings)
+        .background(Colors.background)
+        .onAppear {
+            refreshProcesses()
+        }
+    }
+    
+    private var mainContentView: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Modern Header with gradient
             VStack(spacing: 8) {
@@ -116,7 +145,9 @@ struct MenuBarView: View {
 
                         // Settings button
                         Button(action: {
-                            showSettings = true
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                showSettings = true
+                            }
                         }) {
                             ZStack {
                                 Circle()
@@ -251,13 +282,7 @@ struct MenuBarView: View {
             }
             .frame(maxHeight: 160)
         }
-        .background(Colors.background)
-        .onAppear {
-            refreshProcesses()
-        }
-        .sheet(isPresented: $showSettings) {
-            SettingsView()
-        }
+        .frame(width: 300, height: 280)
     }
 
     private func refreshProcesses() {

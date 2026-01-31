@@ -55,13 +55,16 @@ class MenuBarManager: ObservableObject {
             return
         }
 
-        popover.contentSize = NSSize(width: 300, height: 280)
+        // Don't set fixed contentSize - let SwiftUI views determine their own size
         popover.behavior = .transient
         popover.animates = true
 
         // Create MenuBarView directly - SwiftUI will handle the view model
         let menuBarView = MenuBarView()
         let hostingController = NSHostingController(rootView: menuBarView)
+        
+        // Enable automatic sizing based on SwiftUI content
+        hostingController.sizingOptions = [.preferredContentSize]
         
         // Set content view controller
         popover.contentViewController = hostingController
