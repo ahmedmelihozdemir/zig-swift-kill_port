@@ -13,6 +13,27 @@ BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
+# Function to print status messages (defined early for use throughout script)
+print_status() {
+    echo -e "${GREEN}[✓]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}[!]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[✗]${NC} $1"
+}
+
+print_info() {
+    echo -e "${BLUE}[i]${NC} $1"
+}
+
+print_step() {
+    echo -e "${PURPLE}[→]${NC} $1"
+}
+
 # Configuration
 APP_NAME="swift-kill_port"
 REPO_URL="https://github.com/ahmedmelihozdemir/zig-swift-kill_port.git"
@@ -56,27 +77,6 @@ echo "║  🚀 One-click installation for macOS menu bar app           ║"
 echo "║  ⚡ Monitor and kill processes on development ports         ║"
 echo "╚══════════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
-
-# Function to print status messages
-print_status() {
-    echo -e "${GREEN}[✓]${NC} $1"
-}
-
-print_warning() {
-    echo -e "${YELLOW}[!]${NC} $1"
-}
-
-print_error() {
-    echo -e "${RED}[✗]${NC} $1"
-}
-
-print_info() {
-    echo -e "${BLUE}[i]${NC} $1"
-}
-
-print_step() {
-    echo -e "${PURPLE}[→]${NC} $1"
-}
 
 # Function to check macOS version
 check_macos() {
