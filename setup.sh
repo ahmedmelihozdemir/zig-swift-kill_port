@@ -40,7 +40,24 @@ REPO_URL="https://github.com/ahmedmelihozdemir/zig-swift-kill_port.git"
 TEMP_DIR="/tmp/port-kill-install-$$"
 
 # Detect if we're running from a remote source (curl | bash)
-if [[ "${BASH_SOURCE[0]}" == "/dev/fd/"* ]] || [[ "${BASH_SOURCE[0]}" == *"/proc/self/fd/"* ]]; then
+# We check multiple conditions to reliably detect remote execution
+SCRIPT_PATH="${BASH_SOURCE[0]}"
+IS_REMOTE=false
+
+# Check if script path looks like a pipe/fd
+if [[ "$SCRIPT_PATH" == "/dev/fd/"* ]] || [[ "$SCRIPT_PATH" == *"/proc/self/fd/"* ]] || [[ "$SCRIPT_PATH" == "bash" ]] || [[ -z "$SCRIPT_PATH" ]]; then
+    IS_REMOTE=true
+fi
+
+# Also check if the script directory contains the expected project structure
+if [[ "$IS_REMOTE" == false ]]; then
+    POTENTIAL_DIR="$(cd "$(dirname "$SCRIPT_PATH")" 2>/dev/null && pwd)"
+    if [[ ! -d "$POTENTIAL_DIR/zig-backend" ]] || [[ ! -d "$POTENTIAL_DIR/swift-frontend" ]]; then
+        IS_REMOTE=true
+    fi
+fi
+
+if [[ "$IS_REMOTE" == true ]]; then
     # Remote execution - clone the repository first
     print_step "Downloading source code..."
     
@@ -61,7 +78,7 @@ if [[ "${BASH_SOURCE[0]}" == "/dev/fd/"* ]] || [[ "${BASH_SOURCE[0]}" == *"/proc
     PROJECT_DIR="$TEMP_DIR"
     print_status "Source code downloaded successfully"
 else
-    # Local execution
+    # Local execution - script is in the project directory
     PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
 
