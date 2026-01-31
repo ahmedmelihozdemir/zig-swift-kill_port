@@ -42,10 +42,10 @@ TEMP_DIR="/tmp/port-kill-install-$$"
 # Pretty header (show immediately)
 echo -e "${PURPLE}"
 echo "╔══════════════════════════════════════════════════════════════╗"
-echo "║                Port Kill Monitor Setup                      ║"
+echo "║                Port Kill Monitor Setup                       ║"
 echo "║                                                              ║"
-echo "║  🚀 One-click installation for macOS menu bar app           ║"
-echo "║  ⚡ Monitor and kill processes on development ports         ║"
+echo "║  🚀 One-click installation for macOS menu bar app            ║"
+echo "║  ⚡ Monitor and kill processes on development ports           ║"
 echo "╚══════════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 
