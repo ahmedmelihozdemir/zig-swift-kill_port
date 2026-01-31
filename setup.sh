@@ -39,26 +39,31 @@ APP_NAME="swift-kill_port"
 REPO_URL="https://github.com/ahmedmelihozdemir/zig-swift-kill_port.git"
 TEMP_DIR="/tmp/port-kill-install-$$"
 
-# Detect if we're running from a remote source (curl | bash)
-# We check multiple conditions to reliably detect remote execution
+# Pretty header (show immediately)
+echo -e "${PURPLE}"
+echo "╔══════════════════════════════════════════════════════════════╗"
+echo "║                Port Kill Monitor Setup                      ║"
+echo "║                                                              ║"
+echo "║  🚀 One-click installation for macOS menu bar app           ║"
+echo "║  ⚡ Monitor and kill processes on development ports         ║"
+echo "╚══════════════════════════════════════════════════════════════╝"
+echo -e "${NC}"
+
+# Determine project directory
+# First, try to find a local project directory
 SCRIPT_PATH="${BASH_SOURCE[0]}"
-IS_REMOTE=false
+PROJECT_DIR=""
 
-# Check if script path looks like a pipe/fd
-if [[ "$SCRIPT_PATH" == "/dev/fd/"* ]] || [[ "$SCRIPT_PATH" == *"/proc/self/fd/"* ]] || [[ "$SCRIPT_PATH" == "bash" ]] || [[ -z "$SCRIPT_PATH" ]]; then
-    IS_REMOTE=true
-fi
-
-# Also check if the script directory contains the expected project structure
-if [[ "$IS_REMOTE" == false ]]; then
+# Try to get directory from script path
+if [[ -n "$SCRIPT_PATH" ]] && [[ "$SCRIPT_PATH" != "/dev/fd/"* ]] && [[ "$SCRIPT_PATH" != *"/proc/self/fd/"* ]]; then
     POTENTIAL_DIR="$(cd "$(dirname "$SCRIPT_PATH")" 2>/dev/null && pwd)"
-    if [[ ! -d "$POTENTIAL_DIR/zig-backend" ]] || [[ ! -d "$POTENTIAL_DIR/swift-frontend" ]]; then
-        IS_REMOTE=true
+    if [[ -d "$POTENTIAL_DIR/zig-backend" ]] && [[ -d "$POTENTIAL_DIR/swift-frontend" ]]; then
+        PROJECT_DIR="$POTENTIAL_DIR"
     fi
 fi
 
-if [[ "$IS_REMOTE" == true ]]; then
-    # Remote execution - clone the repository first
+# If no valid local project found, we need to clone
+if [[ -z "$PROJECT_DIR" ]] || [[ ! -d "$PROJECT_DIR/zig-backend" ]]; then
     print_step "Downloading source code..."
     
     # Create temporary directory
@@ -66,7 +71,7 @@ if [[ "$IS_REMOTE" == true ]]; then
     
     # Clone the repository
     if command -v git &> /dev/null; then
-        git clone "$REPO_URL" "$TEMP_DIR" --depth 1 2>/dev/null || {
+        git clone "$REPO_URL" "$TEMP_DIR" --depth 1 || {
             print_error "Failed to clone repository"
             exit 1
         }
@@ -76,24 +81,17 @@ if [[ "$IS_REMOTE" == true ]]; then
     fi
     
     PROJECT_DIR="$TEMP_DIR"
-    print_status "Source code downloaded successfully"
-else
-    # Local execution - script is in the project directory
-    PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    print_status "Source code downloaded to $PROJECT_DIR"
+fi
+
+# Verify project structure
+if [[ ! -d "$PROJECT_DIR/zig-backend" ]]; then
+    print_error "Project structure invalid: zig-backend not found in $PROJECT_DIR"
+    exit 1
 fi
 
 BUILD_DIR="$PROJECT_DIR/build"
 FINAL_APP_PATH="/Applications/Port Kill Monitor.app"
-
-# Pretty header
-echo -e "${PURPLE}"
-echo "╔══════════════════════════════════════════════════════════════╗"
-echo "║                Port Kill Monitor Setup                      ║"
-echo "║                                                              ║"
-echo "║  🚀 One-click installation for macOS menu bar app           ║"
-echo "║  ⚡ Monitor and kill processes on development ports         ║"
-echo "╚══════════════════════════════════════════════════════════════╝"
-echo -e "${NC}"
 
 # Function to check macOS version
 check_macos() {
