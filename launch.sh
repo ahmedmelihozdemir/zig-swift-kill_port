@@ -17,6 +17,13 @@ echo ""
 # Get current directory
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+if ! command -v xcodebuild >/dev/null 2>&1 || ! xcodebuild -version >/dev/null 2>&1; then
+    echo "❌ Full Xcode is required to run the Swift frontend in development mode."
+    echo "   Install/open Xcode, then run:"
+    echo "   sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer"
+    exit 1
+fi
+
 # Build Zig backend
 echo -e "${YELLOW}[1/3]${NC} Building Zig backend..."
 cd "$PROJECT_DIR/zig-backend"
@@ -25,9 +32,9 @@ zig build
 # Build Swift frontend
 echo -e "${YELLOW}[2/3]${NC} Building Swift frontend..."
 cd "$PROJECT_DIR/swift-frontend"
-xcodebuild -project swift-kill_port.xcodeproj 
-           -scheme swift-frontend 
-           -configuration Debug 
+xcodebuild -project swift-kill_port.xcodeproj \
+           -scheme swift-frontend \
+           -configuration Debug \
            build
 
 # Launch the app

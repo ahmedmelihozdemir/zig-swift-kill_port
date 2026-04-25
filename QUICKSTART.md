@@ -43,16 +43,36 @@ This builds and launches the app directly from the project directory.
 The setup script automates the entire installation process:
 
 1. Checks your macOS version for compatibility
-2. Verifies that Xcode Command Line Tools are installed
-3. Installs Zig via Homebrew if it's not already present
-4. Builds the high-performance Zig backend
-5. Compiles the Swift frontend application
-6. Integrates the backend with the frontend
+2. Attempts to download latest prebuilt app release
+3. Falls back to local source build if prebuilt is unavailable
+4. Verifies full Xcode availability only for local Swift build
+5. Installs Zig via Homebrew if it's not already present
+6. Builds/integrates backend and frontend when needed
 7. Installs the complete app to your Applications folder
 8. Sets up command-line tools for terminal use
 9. Launches the application
 
 The entire process typically takes 2-3 minutes, depending on your system and whether dependencies need to be installed.
+
+## Xcode Requirement (Critical)
+
+If installation stops with:
+
+`tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance`
+
+you need to switch from Command Line Tools to full Xcode:
+
+```bash
+# Install/open Xcode once (App Store), then run:
+sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+xcodebuild -version
+```
+
+To always compile locally (and skip prebuilt release usage):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ahmedmelihozdemir/zig-swift-kill_port/main/setup.sh | bash -s -- --build-from-source
+```
 
 ## First Launch
 
@@ -110,10 +130,16 @@ These commands are useful for automation scripts or when you're already working 
 
 ## Common Issues
 
-**Permission denied when running setup:**
+**xcodebuild requires full Xcode:**
 
 ```bash
-sudo xcode-select --install
+sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+```
+
+**Xcode Command Line Tools missing:**
+
+```bash
+xcode-select --install
 ```
 
 **Homebrew not installed:**

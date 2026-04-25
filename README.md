@@ -30,11 +30,35 @@ curl -fsSL https://raw.githubusercontent.com/ahmedmelihozdemir/zig-swift-kill_po
 The installation script will:
 
 - Check your macOS version compatibility
-- Install Zig via Homebrew if needed
-- Build both the backend and frontend
+- Try to download a prebuilt app from latest GitHub Release
+- Fall back to local source build if no prebuilt release exists
+- Verify full Xcode availability only when local Swift build is needed
+- Install Zig via Homebrew if needed for local build
 - Install the app to your Applications folder
 - Set up CLI tools
 - Launch the application
+
+You can force local compilation at any time:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ahmedmelihozdemir/zig-swift-kill_port/main/setup.sh | bash -s -- --build-from-source
+```
+
+### Important Build Requirement
+
+`xcodebuild` must come from **full Xcode**, not only Command Line Tools.
+
+If you see this error during setup:
+
+`tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance`
+
+fix it with:
+
+```bash
+# 1) Install and open Xcode once from App Store
+# 2) Switch active developer directory
+sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+```
 
 ### Manual Installation
 
@@ -89,7 +113,7 @@ These commands are useful for automation scripts or when you prefer working in t
 ## System Requirements
 
 - **Operating System:** macOS 12.0 (Monterey) or later
-- **Development Tools:** Xcode Command Line Tools
+- **Development Tools:** Full Xcode (required for Swift app build)
 - **Package Manager:** Homebrew (for Zig installation)
 
 If you don't have these installed, the setup script will guide you through installing them.
@@ -122,10 +146,17 @@ port_kill/
 
 ## Troubleshooting
 
-**"Permission denied" errors during installation:**
+**xcodebuild requires full Xcode:**
 
 ```bash
-sudo xcode-select --install
+sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+xcodebuild -version
+```
+
+**Xcode Command Line Tools missing:**
+
+```bash
+xcode-select --install
 ```
 
 **Homebrew not found:**
@@ -149,6 +180,17 @@ sudo ln -s "/Applications/Port Kill Monitor.app/Contents/Resources/kill-port" /u
 ## Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests.
+
+## Release Pipeline
+
+Prebuilt installer assets are produced automatically by GitHub Actions on every tag that matches `v*` (for example `v1.0.0`).
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+This uploads `PortKillMonitor-macOS.tar.gz` to the release page, and `setup.sh` automatically consumes that artifact for one-command installation.
 
 ## License
 

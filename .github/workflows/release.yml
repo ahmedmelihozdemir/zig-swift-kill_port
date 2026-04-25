@@ -1,0 +1,52 @@
+name: Build and Release macOS App
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v2
+        with:
+          version: "0.15.2"
+
+      - name: Build Zig backend
+        working-directory: zig-backend
+        run: zig build
+
+      - name: Build Swift frontend
+        working-directory: swift-frontend
+        run: |
+          xcodebuild -project swift-kill_port.xcodeproj \
+            -scheme swift-frontend \
+            -configuration Release \
+            -derivedDataPath build \
+            build
+
+      - name: Package app bundle
+        run: |
+          rm -rf dist
+          mkdir -p dist
+          cp -R "swift-frontend/build/Build/Products/Release/swift-frontend.app" "dist/Port Kill Monitor.app"
+          cp "zig-backend/zig-out/bin/kill-port" "dist/Port Kill Monitor.app/Contents/Resources/kill-port"
+          cp "zig-backend/zig-out/bin/kill-port-console" "dist/Port Kill Monitor.app/Contents/Resources/kill-port-console"
+          chmod +x "dist/Port Kill Monitor.app/Contents/Resources/kill-port"
+          chmod +x "dist/Port Kill Monitor.app/Contents/Resources/kill-port-console"
+          tar -czf PortKillMonitor-macOS.tar.gz -C dist "Port Kill Monitor.app"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: PortKillMonitor-macOS.tar.gz
+          generate_release_notes: true
